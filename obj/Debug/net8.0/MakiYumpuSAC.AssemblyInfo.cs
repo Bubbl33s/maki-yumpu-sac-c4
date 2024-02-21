@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MakiYumpuSAC")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cd545f4877c4babeaa571e8fbefdf629e09121db")]
 [assembly: System.Reflection.AssemblyProductAttribute("MakiYumpuSAC")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MakiYumpuSAC")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
