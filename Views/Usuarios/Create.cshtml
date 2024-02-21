@@ -1,0 +1,61 @@
+﻿@model MakiYumpuSAC.Models.Usuario
+
+@{
+    ViewData["Title"] = "Crear Usuario";
+}
+
+<h4>Crear Usuario</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="ApPatUsuario" class="control-label">Apellido Paterno</label>
+                <input asp-for="ApPatUsuario" class="form-control" />
+                <span asp-validation-for="ApPatUsuario" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ApMatUsuario" class="control-label">Apellido Materno</label>
+                <input asp-for="ApMatUsuario" class="form-control" />
+                <span asp-validation-for="ApMatUsuario" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NombresUsuario" class="control-label">Nombres</label>
+                <input asp-for="NombresUsuario" class="form-control" />
+                <span asp-validation-for="NombresUsuario" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DniUsuario" class="control-label">DNI</label>
+                <input asp-for="DniUsuario" class="form-control" />
+                <span asp-validation-for="DniUsuario" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LoginUsuario" class="control-label">Usuario</label>
+                <input asp-for="LoginUsuario" class="form-control" />
+                <span asp-validation-for="LoginUsuario" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PasswordUsuario" class="control-label">Contraseña</label>
+                <input asp-for="PasswordUsuario" class="form-control" type="password" />
+                <span asp-validation-for="PasswordUsuario" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FechaNacUsuario" class="control-label">Fecha de Nacimiento</label>
+                <input asp-for="FechaNacUsuario" class="form-control" type="date" />
+                <span asp-validation-for="FechaNacUsuario" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    Administrador <input class="form-check-input" asp-for="EsAdmin" type="checkbox" />
+                </label>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Crear Usuario" class="btn btn-primary" />
+                <a class="btn btn-danger" asp-action="Index">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+

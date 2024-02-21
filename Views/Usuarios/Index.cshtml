@@ -1,0 +1,90 @@
+﻿@model IEnumerable<MakiYumpuSAC.Models.Usuario>
+
+@{
+    ViewData["Title"] = "Usuarios";
+}
+
+<h4>Usuarios</h4>
+
+<p>
+    <a asp-action="Create">Crear Nuevo Usuario</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Ap. Paterno
+            </th>
+            <th>
+                Ap. Materno
+            </th>
+            <th>
+                Nombres
+            </th>
+            <th>
+                DNI
+            </th>
+            <th>
+                Usuario
+            </th>
+            <!--
+            <th>
+                @Html.DisplayNameFor(model => model.PasswordUsuario)
+            </th>
+            -->
+            <th>
+                Fecha Nac.
+            </th>
+            <th>
+                Rol
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ApPatUsuario)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ApMatUsuario)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NombresUsuario)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DniUsuario)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LoginUsuario)
+            </td>
+            <!--
+            <td>
+                @Html.DisplayFor(modelItem => item.PasswordUsuario)
+            </td>
+            --->
+            <td>
+                @{
+                    var fechaNacimiento = item.FechaNacUsuario;
+                    string fechaFormateada = fechaNacimiento.ToString("dd/MM/yyyy");
+                    @fechaFormateada
+                }
+            </td>
+            <td>
+                @{
+                    string rol = item.EsAdmin ? "Admin" : "Usuario";
+                    @rol
+                }
+            </td>
+            <td>
+                <a class="btn btn-outline-info" asp-action="Edit" asp-route-id="@item.IdUsuario">Actualizar</a>
+                <!-- TODO?: Desencriptar password
+                <a asp-action="Details" asp-route-id="@item.IdUsuario">Details</a> |
+                -->
+                <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.IdUsuario">Eliminar</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

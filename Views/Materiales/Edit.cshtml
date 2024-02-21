@@ -1,0 +1,41 @@
+﻿@model MakiYumpuSAC.Models.Material
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Material</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="IdMaterial" />
+            <div class="form-group">
+                <label asp-for="IdMaterialBase" class="control-label"></label>
+                <select asp-for="IdMaterialBase" class="form-control" asp-items="ViewBag.IdMaterialBase"></select>
+                <span asp-validation-for="IdMaterialBase" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdPantone" class="control-label"></label>
+                <input asp-for="IdPantone" class="form-control" />
+                <span asp-validation-for="IdPantone" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Hebras" class="control-label"></label>
+                <input asp-for="Hebras" class="form-control" />
+                <span asp-validation-for="Hebras" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

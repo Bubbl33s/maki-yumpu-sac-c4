@@ -1,0 +1,66 @@
+﻿@model MakiYumpuSAC.Models.Usuario
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Usuario</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="IdUsuario" />
+            <div class="form-group">
+                <label asp-for="ApPatUsuario" class="control-label"></label>
+                <input asp-for="ApPatUsuario" class="form-control" />
+                <span asp-validation-for="ApPatUsuario" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ApMatUsuario" class="control-label"></label>
+                <input asp-for="ApMatUsuario" class="form-control" />
+                <span asp-validation-for="ApMatUsuario" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NombresUsuario" class="control-label"></label>
+                <input asp-for="NombresUsuario" class="form-control" />
+                <span asp-validation-for="NombresUsuario" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DniUsuario" class="control-label"></label>
+                <input asp-for="DniUsuario" class="form-control" />
+                <span asp-validation-for="DniUsuario" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LoginUsuario" class="control-label"></label>
+                <input asp-for="LoginUsuario" class="form-control" />
+                <span asp-validation-for="LoginUsuario" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PasswordUsuario" class="control-label"></label>
+                <input asp-for="PasswordUsuario" class="form-control" />
+                <span asp-validation-for="PasswordUsuario" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FechaNacUsuario" class="control-label"></label>
+                <input asp-for="FechaNacUsuario" class="form-control" />
+                <span asp-validation-for="FechaNacUsuario" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="EsAdmin" /> @Html.DisplayNameFor(model => model.EsAdmin)
+                </label>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
