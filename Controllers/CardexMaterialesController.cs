@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MakiYumpuSAC.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MakiYumpuSAC.Controllers
 {
+    [Authorize]
     public class CardexMaterialesController : Controller
     {
         private readonly MakiYumpuSacContext _context;

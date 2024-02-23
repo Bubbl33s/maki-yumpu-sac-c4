@@ -1,9 +1,11 @@
 ﻿using MakiYumpuSAC.Models;
 using MakiYumpuSAC.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MakiYumpuSAC.Controllers
 {
+    [Authorize]
     public class FormPedidosVMController : Controller
     {
         private readonly MakiYumpuSacContext _context;

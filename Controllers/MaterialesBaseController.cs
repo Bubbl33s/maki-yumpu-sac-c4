@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MakiYumpuSAC.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MakiYumpuSAC.Controllers
 {
+    [Authorize]
     public class MaterialesBaseController : Controller
     {
         private readonly MakiYumpuSacContext _context;
@@ -25,7 +27,26 @@ namespace MakiYumpuSAC.Controllers
         }
 
         // GET: MaterialBase/Details/5
-        public async Task<IActionResult> Details(string id)
+        public async Task<IActionResult> Details(int id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var materialBase = await _context.MaterialBases
+                .Include(mb => mb.Materials)
+                .FirstOrDefaultAsync(m => m.IdMaterialBase == id);
+
+            if (materialBase == null)
+            {
+                return NotFound();
+            }
+
+            return View(materialBase);
+        }
+
+        /*public async Task<IActionResult> Details(string id)
         {
             if (id == null)
             {
@@ -40,7 +61,7 @@ namespace MakiYumpuSAC.Controllers
             }
 
             return View(materialBase);
-        }
+        }*/
 
         // GET: MaterialBase/Create
         public IActionResult Create()
@@ -53,10 +74,11 @@ namespace MakiYumpuSAC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdMaterialBase,DescMaterial")] MaterialBase materialBase)
+        public async Task<IActionResult> Create([Bind("IdMaterialBase,CodigoMaterial,DescMaterial")] MaterialBase materialBase)
         {
             if (ModelState.IsValid)
             {
+                materialBase.Activo = true;
                 _context.Add(materialBase);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -85,7 +107,7 @@ namespace MakiYumpuSAC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("IdMaterialBase,DescMaterial")] MaterialBase materialBase)
+        public async Task<IActionResult> Edit(int id, [Bind("IdMaterialBase,CodigoMaterial,DescMaterial")] MaterialBase materialBase)
         {
             if (id != materialBase.IdMaterialBase)
             {
@@ -96,6 +118,7 @@ namespace MakiYumpuSAC.Controllers
             {
                 try
                 {
+                    materialBase.Activo = true;
                     _context.Update(materialBase);
                     await _context.SaveChangesAsync();
                 }
@@ -116,7 +139,7 @@ namespace MakiYumpuSAC.Controllers
         }
 
         // GET: MaterialBase/Delete/5
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> Delete(int id)
         {
             if (id == null)
             {
@@ -136,19 +159,19 @@ namespace MakiYumpuSAC.Controllers
         // POST: MaterialBase/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var materialBase = await _context.MaterialBases.FindAsync(id);
             if (materialBase != null)
             {
-                _context.MaterialBases.Remove(materialBase);
+                materialBase.Activo = false;
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool MaterialBaseExists(string id)
+        private bool MaterialBaseExists(int id)
         {
             return _context.MaterialBases.Any(e => e.IdMaterialBase == id);
         }

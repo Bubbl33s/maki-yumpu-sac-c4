@@ -1,24 +1,63 @@
 ﻿@model MakiYumpuSAC.Models.MaterialBase
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Material Base";
 }
 
-<h1>Details</h1>
-
 <div>
-    <h4>MaterialBase</h4>
+    <h4>Detalles Material Base</h4>
     <hr />
     <dl class="row">
+        <dt class="col-sm-2">
+            ID
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.IdMaterialBase)
+        </dd>
+    </dl>
+    <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DescMaterial)
+            Descripción
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.DescMaterial)
         </dd>
     </dl>
 </div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                ID Material
+            </th>
+            <th>
+                ID Pantone
+            </th>
+            <th>
+                Hebras
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Materials)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IdMaterial)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IdPantone)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Hebras)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.IdMaterialBase">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a class="btn btn-outline-info" asp-action="Edit" asp-route-id="@Model?.IdMaterialBase">Actualizar</a>
+    <a class="btn btn-outline-danger" asp-action="Index">Volver</a>
 </div>

@@ -56,7 +56,7 @@ namespace MakiYumpuSAC.Controllers
                 properties
                 );
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("IndexAdmin", "Home");
         }
     }
 }

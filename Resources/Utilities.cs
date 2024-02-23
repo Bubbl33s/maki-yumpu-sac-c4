@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore.Query.Internal;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis.Options;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 using System.Runtime.Intrinsics.Arm;
 using System.Security.Cryptography;
 using System.Text;
@@ -24,6 +26,20 @@ namespace MakiYumpuSAC.Resources
             }
 
             return sb.ToString();
+        }
+
+        public static SelectList HebrasOptions()
+        {
+            var hebras = new List<string>
+            {
+                "1/5",
+                "2/16",
+                "2/28",
+                "2/32",
+                "3/10"
+            };
+
+            return new SelectList(hebras);
         }
     }
 }

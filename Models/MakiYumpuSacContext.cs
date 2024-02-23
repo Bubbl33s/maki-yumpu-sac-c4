@@ -94,6 +94,8 @@ public partial class MakiYumpuSacContext : DbContext
                 .HasMaxLength(30)
                 .IsUnicode(false)
                 .HasColumnName("pais_cliente");
+            entity.Property(e => e.Activo)
+                .HasDefaultValue(true);
         });
 
         modelBuilder.Entity<DetalleFormPedido>(entity =>
@@ -319,6 +321,8 @@ public partial class MakiYumpuSacContext : DbContext
                 .HasMaxLength(15)
                 .IsUnicode(false)
                 .HasColumnName("id_pantone");
+            entity.Property(e => e.Activo)
+                .HasDefaultValue(true);
 
             entity.HasOne(d => d.IdMaterialBaseNavigation).WithMany(p => p.Materials)
                 .HasForeignKey(d => d.IdMaterialBase)
@@ -336,10 +340,16 @@ public partial class MakiYumpuSacContext : DbContext
                 .HasMaxLength(15)
                 .IsUnicode(false)
                 .HasColumnName("id_material_base");
+            entity.Property(e => e.CodigoMaterial)
+                .HasMaxLength(15)
+                .IsUnicode(false)
+                .HasColumnName("codigo_material");
             entity.Property(e => e.DescMaterial)
                 .HasMaxLength(30)
                 .IsUnicode(false)
                 .HasColumnName("desc_material");
+            entity.Property(e => e.Activo)
+                .HasDefaultValue(true);
         });
 
         modelBuilder.Entity<OrdenCompra>(entity =>
@@ -424,6 +434,8 @@ public partial class MakiYumpuSacContext : DbContext
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("password_usuario");
+            entity.Property(e => e.Activo)
+                .HasDefaultValue(true);
         });
 
         OnModelCreatingPartial(modelBuilder);

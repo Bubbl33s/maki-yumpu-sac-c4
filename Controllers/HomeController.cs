@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace MakiYumpuSAC.Controllers
 {
-    [Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -18,6 +17,11 @@ namespace MakiYumpuSAC.Controllers
         }
 
         public IActionResult Index()
+        {
+            return View();
+        }
+
+        public IActionResult IndexAdmin()
         {
             return View();
         }

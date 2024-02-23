@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MakiYumpuSAC.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MakiYumpuSAC.Controllers
 {
+    [Authorize]
     public class UsuariosController : Controller
     {
         private readonly MakiYumpuSacContext _context;
@@ -57,6 +59,7 @@ namespace MakiYumpuSAC.Controllers
         {
             if (ModelState.IsValid)
             {
+                usuario.Activo = true;
                 _context.Add(usuario);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -96,6 +99,7 @@ namespace MakiYumpuSAC.Controllers
             {
                 try
                 {
+                    usuario.Activo = true;
                     _context.Update(usuario);
                     await _context.SaveChangesAsync();
                 }
@@ -141,10 +145,10 @@ namespace MakiYumpuSAC.Controllers
             var usuario = await _context.Usuarios.FindAsync(id);
             if (usuario != null)
             {
-                _context.Usuarios.Remove(usuario);
+                usuario.Activo = false;
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 

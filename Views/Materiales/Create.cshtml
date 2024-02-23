@@ -1,45 +1,33 @@
 ﻿@model MakiYumpuSAC.Models.Material
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Crear Material";
 }
 
-<h1>Create</h1>
-
-<h4>Material</h4>
+<h4>Nuevo Material</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="IdMaterialBase" class="control-label"></label>
-                <select asp-for="IdMaterialBase" class ="form-control" asp-items="ViewBag.IdMaterialBase"></select>
+                <label asp-for="IdMaterialBase" class="control-label">Material Base</label>
+                <select asp-for="IdMaterialBase" class ="form-control" asp-items="ViewBag.CodigoMaterialBase"></select>
             </div>
             <div class="form-group">
-                <a class="nav-link text-dark" asp-area="" asp-controller="MaterialesBase" asp-action="Index">Materiales</a>
-            </div>
-            <div class="form-group">
-                <label asp-for="IdPantone" class="control-label"></label>
+                <label asp-for="IdPantone" class="control-label">ID Pantone</label>
                 <input asp-for="IdPantone" class="form-control" />
                 <span asp-validation-for="IdPantone" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Hebras" class="control-label"></label>
-                <select asp-for="Hebras" class="form-control">
-                    <option>2/16</option>
-                    <option>3/10</option>
-                </select>
+                <select asp-for="Hebras" class="form-control" asp-items="ViewBag.Hebras"></select>
                 <span asp-validation-for="Hebras" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Crear" class="btn btn-primary" />
+                <a class="btn btn-outline-danger" asp-action="Index">Cancelar</a>
             </div>
         </form>
     </div>
 </div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-

@@ -1,0 +1,46 @@
+﻿@model IEnumerable<MakiYumpuSAC.Models.Material>
+
+@{
+    ViewData["Title"] = "Materiales Inactivos";
+}
+
+<h4>Materiales Inactivos</h4>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Material Base
+            </th>
+            <th>
+                ID Pantone
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Hebras)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IdMaterialBaseNavigation.IdMaterialBase) - @Html.DisplayFor(modelItem => item.IdMaterialBaseNavigation.DescMaterial)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IdPantone)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Hebras)
+                </td>
+                <td>
+                    <form asp-action="Reactivar">
+                        <input type="hidden" name="id" value="@item.IdMaterial" />
+                        <input class="btn btn-outline-success" type="submit" value="Reactivar" />
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

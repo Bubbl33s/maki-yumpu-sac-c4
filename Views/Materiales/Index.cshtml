@@ -1,25 +1,32 @@
 ﻿@model IEnumerable<MakiYumpuSAC.Models.Material>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Materiales";
 }
 
-<h1>Index</h1>
+<h4>Materiales</h4>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<div class="d-flex justify-content-between align-items-center mb-2">
+    <a asp-action="Create">Nuevo Material</a> 
+    <div class="d-flex justify-content-between align-items-center mb-2 gap-2">
+        <a class="btn btn-outline-secondary" asp-controller="MaterialesBase" asp-action="Index">Materiales Base</a>
+        <a class="btn btn-outline-secondary" asp-controller="Materiales" asp-action="Inactivos">Materiales Inactivos</a>
+    </div>
+</div>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.IdPantone)
+                ID
+            </th>
+            <th>
+                Material Base
+            </th>
+            <th>
+                ID Pantone
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Hebras)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IdMaterialBaseNavigation)
             </th>
             <th></th>
         </tr>
@@ -28,18 +35,20 @@
 @foreach (var item in Model) {
         <tr>
             <td>
+                @Html.DisplayFor(modelItem => item.IdMaterial)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdMaterialBaseNavigation.CodigoMaterial) - @Html.DisplayFor(modelItem => item.IdMaterialBaseNavigation.DescMaterial)
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.IdPantone)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Hebras)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.IdMaterialBaseNavigation.IdMaterialBase)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.IdMaterial">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.IdMaterial">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.IdMaterial">Delete</a>
+                <a class="btn btn-outline-info" asp-action="Edit" asp-route-id="@item.IdMaterial">Actualizar</a>
+                <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.IdMaterial">Eliminar</a>
             </td>
         </tr>
 }

@@ -6,9 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MakiYumpuSAC.Models;
+using MakiYumpuSAC.Resources;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MakiYumpuSAC.Controllers
 {
+    [Authorize]
     public class MaterialesController : Controller
     {
         private readonly MakiYumpuSacContext _context;
@@ -21,7 +24,11 @@ namespace MakiYumpuSAC.Controllers
         // GET: Materiales
         public async Task<IActionResult> Index()
         {
-            var makiYumpuSacContext = _context.Materials.Include(m => m.IdMaterialBaseNavigation);
+            var makiYumpuSacContext = _context.Materials
+                .Include(m => m.IdMaterialBaseNavigation)
+                .Where(m => m.Activo == true &&
+                m.IdMaterialBaseNavigation.Activo == true);
+
             return View(await makiYumpuSacContext.ToListAsync());
         }
 
@@ -47,18 +54,24 @@ namespace MakiYumpuSAC.Controllers
         // GET: Materiales/Create
         public IActionResult Create()
         {
-            var materialesBase = _context.MaterialBases.ToList();
+            var materialesBases = _context.MaterialBases.ToList();
 
-            var materialBaseItems = materialesBase.Select(mb => new SelectListItem
+            var materialBaseItems = materialesBases.Select(mb => new SelectListItem
             {
-                Value = $"{mb.IdMaterialBase}", // Valor del elemento option
-                Text = $"{mb.IdMaterialBase} - {mb.DescMaterial}" // Texto que se mostrará al usuario
+                Value = $"{mb.IdMaterialBase}",
+                Text = $"{mb.CodigoMaterial} - {mb.DescMaterial}"
             }).ToList();
 
             var selectList = new SelectList(materialBaseItems, "Value", "Text");
-            ViewData["IdMaterialBase"] = selectList;
+
+            ViewData["CodigoMaterialBase"] = selectList;
+            ViewData["Hebras"] = Utilities.HebrasOptions();
 
             return View();
+            /*
+            ViewData["IdMaterialBase"] = new SelectList(_context.MaterialBases, "IdMaterialBase", "IdMaterialBase");
+            return View();
+            */
         }
 
         // POST: Materiales/Create
@@ -70,6 +83,7 @@ namespace MakiYumpuSAC.Controllers
         {
             if (ModelState.IsValid)
             {
+                material.Activo = true;
                 _context.Add(material);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -91,7 +105,20 @@ namespace MakiYumpuSAC.Controllers
             {
                 return NotFound();
             }
-            ViewData["IdMaterialBase"] = new SelectList(_context.MaterialBases, "IdMaterialBase", "IdMaterialBase", material.IdMaterialBase);
+
+            var materialesBases = _context.MaterialBases.ToList();
+
+            var materialBaseItems = materialesBases.Select(mb => new SelectListItem
+            {
+                Value = $"{mb.IdMaterialBase}",
+                Text = $"{mb.CodigoMaterial} - {mb.DescMaterial}"
+            }).ToList();
+
+            var selectList = new SelectList(materialBaseItems, "Value", "Text");
+
+            ViewData["CodigoMaterialBase"] = selectList;
+            ViewData["Hebras"] = Utilities.HebrasOptions();
+
             return View(material);
         }
 
@@ -111,6 +138,7 @@ namespace MakiYumpuSAC.Controllers
             {
                 try
                 {
+                    material.Activo = true;
                     _context.Update(material);
                     await _context.SaveChangesAsync();
                 }
@@ -158,16 +186,41 @@ namespace MakiYumpuSAC.Controllers
             var material = await _context.Materials.FindAsync(id);
             if (material != null)
             {
-                _context.Materials.Remove(material);
+                material.Activo = false;
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool MaterialExists(int id)
         {
             return _context.Materials.Any(e => e.IdMaterial == id);
+        }
+
+
+        // GET: Materiales
+        public async Task<IActionResult> Inactivos()
+        {
+            var makiYumpuSacContext = _context.Materials
+                .Include(m => m.IdMaterialBaseNavigation)
+                .Where(m => m.Activo == false);
+
+            return View(await makiYumpuSacContext.ToListAsync());
+        }
+
+        [HttpPost, ActionName("Reactivar")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Reactivar(int id)
+        {
+            var material = await _context.Materials.FindAsync(id);
+            if (material != null)
+            {
+                material.Activo = true;
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }

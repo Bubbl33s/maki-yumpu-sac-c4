@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace MakiYumpuSAC.Models;
 
@@ -26,6 +27,9 @@ public partial class FichaTecnica
     public string AcabadosDesc { get; set; } = null!;
 
     public string? VaporizadoDesc { get; set; }
+
+    [DefaultValue(true)]
+    public bool Activo { get; set; }
 
     public virtual ICollection<DetalleFt> DetalleFts { get; set; } = new List<DetalleFt>();
 

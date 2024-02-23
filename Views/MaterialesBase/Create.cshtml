@@ -1,35 +1,29 @@
 ﻿@model MakiYumpuSAC.Models.MaterialBase
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Material Base";
 }
 
-<h1>Create</h1>
-
-<h4>MaterialBase</h4>
+<h4>Nuevo Material Base</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="IdMaterialBase" class="control-label"></label>
-                <input asp-for="IdMaterialBase" class="form-control" />
+                <label asp-for="CodigoMaterial" class="control-label">Código</label>
+                <input asp-for="CodigoMaterial" class="form-control" />
                 <span asp-validation-for="IdMaterialBase" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="DescMaterial" class="control-label"></label>
+                <label asp-for="DescMaterial" class="control-label">Descripción</label>
                 <input asp-for="DescMaterial" class="form-control" />
                 <span asp-validation-for="DescMaterial" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Crear" class="btn btn-primary" />
+                <a class="btn btn-outline-danger" asp-action="Index">Cancelar</a>
             </div>
         </form>
     </div>
 </div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-

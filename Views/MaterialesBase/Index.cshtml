@@ -7,13 +7,16 @@
 <h4>Materiales Base</h4>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Nuevo Material Base</a>
 </p>
 <table class="table">
     <thead>
         <tr>
             <th>
                 ID
+            </th>
+            <th>
+                Código
             </th>
             <th>
                 Descripción
@@ -24,8 +27,11 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            <td>
+            <th>
                 @Html.DisplayFor(modelItem => item.IdMaterialBase)
+            </th>
+            <td>
+                @Html.DisplayFor(modelItem => item.CodigoMaterial)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.DescMaterial)
