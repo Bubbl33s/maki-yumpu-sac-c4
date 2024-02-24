@@ -1,0 +1,88 @@
+﻿@model IEnumerable<MakiYumpuSAC.Models.Usuario>
+
+@{
+    ViewData["Title"] = "Usuarios Inactivos";
+}
+
+<div class="d-flex justify-content-between algin-items-center">
+    <h4>Usuarios Inactivos</h4>
+    <a class="btn btn-outline-danger" asp-action="Index">Volver</a>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                ID
+            </th>
+            <th>
+                Ap. Paterno
+            </th>
+            <th>
+                Ap. Materno
+            </th>
+            <th>
+                Nombres
+            </th>
+            <th>
+                DNI
+            </th>
+            <th>
+                Login
+            </th>
+            <th>
+                Fecha Nac.
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <th>
+                    @Html.DisplayFor(modelItem => item.IdUsuario)
+                </th>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ApPatUsuario)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ApMatUsuario)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NombresUsuario)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DniUsuario)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LoginUsuario)
+                </td>
+                <!--
+                <td>
+                    @Html.DisplayFor(modelItem => item.PasswordUsuario)
+                </td>
+                --->
+                <td>
+                    @{
+                        var fechaNacimiento = item.FechaNacUsuario;
+                        string fechaFormateada = fechaNacimiento.ToString("dd/MM/yyyy");
+                        @fechaFormateada
+                    }
+                </td>
+                <td>
+                    @{
+                        string rol = item.EsAdmin ? "Admin" : "Usuario";
+                        @rol
+                    }
+                </td>
+                <td>
+                    <form asp-action="Reactivar">
+                        <input type="hidden" name="id" value="@item.IdUsuario" />
+                        <input class="btn btn-outline-success" type="submit" value="Reactivar" />
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

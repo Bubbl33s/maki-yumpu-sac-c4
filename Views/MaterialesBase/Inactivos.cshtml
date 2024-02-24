@@ -1,11 +1,11 @@
-﻿@model IEnumerable<MakiYumpuSAC.Models.Material>
+﻿@model IEnumerable<MakiYumpuSAC.Models.MaterialBase>
 
 @{
-    ViewData["Title"] = "Materiales Inactivos";
+    ViewData["Title"] = "Materiales Base Inactivos";
 }
 
-<div class="d-flex justify-content-between align-items-center">
-    <h4>Materiales Inactivos</h4>
+<div class="d-flex justify-content-between algin-items-center">
+    <h4>Materiales Base Inactivos</h4>
     <a class="btn btn-outline-danger" asp-action="Index">Volver</a>
 </div>
 
@@ -13,13 +13,13 @@
     <thead>
         <tr>
             <th>
-                Material Base
+                ID
             </th>
             <th>
-                ID Pantone
+                Código
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Hebras)
+                Descripción
             </th>
             <th></th>
         </tr>
@@ -29,17 +29,17 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.IdMaterialBaseNavigation.IdMaterialBase) - @Html.DisplayFor(modelItem => item.IdMaterialBaseNavigation.DescMaterial)
+                    @Html.DisplayFor(modelItem => item.IdMaterialBase)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.IdPantone)
+                    @Html.DisplayFor(modelItem => item.CodigoMaterial)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Hebras)
+                    @Html.DisplayFor(modelItem => item.DescMaterial)
                 </td>
                 <td>
                     <form asp-action="Reactivar">
-                        <input type="hidden" name="id" value="@item.IdMaterial" />
+                        <input type="hidden" name="id" value="@item.IdMaterialBase" />
                         <input class="btn btn-outline-success" type="submit" value="Reactivar" />
                     </form>
                 </td>

@@ -6,12 +6,31 @@
 
 <h4>Usuarios</h4>
 
-<p>
+<div class="d-flex justify-content-between align-items-center mb-2">
     <a asp-action="Create">Crear Nuevo Usuario</a>
-</p>
-<table class="table">
+    <div>
+        <a class="btn btn-outline-secondary" asp-action="Inactivos">Usuarios Inactivos</a>
+    </div>
+</div>
+
+<div class="form-group">
+    <input type="text" id="input-buscar" class="form-control" placeholder="Buscar usuario...">
+</div>
+
+<div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+    <input type="radio" class="btn-check" name="btnradio" id="radio-nombres" autocomplete="off" checked>
+    <label class="btn btn-outline-primary" for="radio-nombres">Nombres</label>
+
+    <input type="radio" class="btn-check" name="btnradio" id="radio-dni" autocomplete="off">
+    <label class="btn btn-outline-primary" for="radio-dni">DNI</label>
+</div>
+
+<table id="tabla-usuarios" class="table">
     <thead>
         <tr>
+            <th>
+                ID
+            </th>
             <th>
                 Ap. Paterno
             </th>
@@ -44,6 +63,9 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
+            <th>
+                @Html.DisplayFor(modelItem => item.IdUsuario)
+            </th>
             <td>
                 @Html.DisplayFor(modelItem => item.ApPatUsuario)
             </td>
@@ -68,13 +90,13 @@
                 @{
                     var fechaNacimiento = item.FechaNacUsuario;
                     string fechaFormateada = fechaNacimiento.ToString("dd/MM/yyyy");
-                    @fechaFormateada
+                                        @fechaFormateada
                 }
             </td>
             <td>
                 @{
                     string rol = item.EsAdmin ? "Admin" : "Usuario";
-                    @rol
+                                        @rol
                 }
             </td>
             <td>
@@ -88,3 +110,44 @@
 }
     </tbody>
 </table>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#input-buscar').on('input', function () {
+                var searchText = $(this).val().toLowerCase();
+                var columnIndex;
+
+                if ($("#radio-dni").prop("checked")) {
+                    columnIndex = [3];
+                }
+                else {
+                    columnIndex = [0, 1, 2];
+                }
+                
+                $('#tabla-usuarios tbody tr').each(function () {
+                    var rowText = "";
+                    columnIndex.forEach(i => rowText += $(this)
+                        .find(`td:eq(${i})`)
+                        .text()
+                        .trim()
+                        .toLowerCase() + " ");
+
+                    if (rowText.includes(searchText)) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            });
+
+            $('input[type="radio"]').change(function () {
+                if ($(this).prop("id") === "radio-dni") {
+                    $('#input-buscar').attr("type", "number").attr("step", "1");
+                } else {
+                    $('#input-buscar').attr("type", "text").removeAttr("step");
+                }
+            });
+        });
+    </script>
+}
