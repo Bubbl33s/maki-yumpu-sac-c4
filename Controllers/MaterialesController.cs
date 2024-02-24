@@ -24,12 +24,13 @@ namespace MakiYumpuSAC.Controllers
         // GET: Materiales
         public async Task<IActionResult> Index()
         {
-            var makiYumpuSacContext = _context.Materials
+            return View(
+                await _context.Materials
                 .Include(m => m.IdMaterialBaseNavigation)
-                .Where(m => m.Activo == true &&
-                m.IdMaterialBaseNavigation.Activo == true);
-
-            return View(await makiYumpuSacContext.ToListAsync());
+                .Where(m => m.Activo &&
+                m.IdMaterialBaseNavigation.Activo)
+                .ToListAsync()
+                );
         }
 
         // GET: Materiales/Details/5
@@ -202,11 +203,12 @@ namespace MakiYumpuSAC.Controllers
         // GET: Materiales
         public async Task<IActionResult> Inactivos()
         {
-            var makiYumpuSacContext = _context.Materials
+            return View(
+                await _context.Materials
                 .Include(m => m.IdMaterialBaseNavigation)
-                .Where(m => m.Activo == false);
-
-            return View(await makiYumpuSacContext.ToListAsync());
+                .Where(m => !m.Activo)
+                .ToListAsync()
+                );
         }
 
         [HttpPost, ActionName("Reactivar")]
@@ -214,6 +216,7 @@ namespace MakiYumpuSAC.Controllers
         public async Task<IActionResult> Reactivar(int id)
         {
             var material = await _context.Materials.FindAsync(id);
+            
             if (material != null)
             {
                 material.Activo = true;

@@ -10,9 +10,10 @@
     <a asp-action="Create">Nuevo Material</a> 
     <div class="d-flex justify-content-between align-items-center mb-2 gap-2">
         <a class="btn btn-outline-secondary" asp-controller="MaterialesBase" asp-action="Index">Materiales Base</a>
-        <a class="btn btn-outline-secondary" asp-controller="Materiales" asp-action="Inactivos">Materiales Inactivos</a>
+        <a class="btn btn-outline-secondary" asp-action="Inactivos">Materiales Inactivos</a>
     </div>
 </div>
+
 <table class="table">
     <thead>
         <tr>
@@ -34,9 +35,9 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            <td>
+            <th>
                 @Html.DisplayFor(modelItem => item.IdMaterial)
-            </td>
+            </th>
             <td>
                 @Html.DisplayFor(modelItem => item.IdMaterialBaseNavigation.CodigoMaterial) - @Html.DisplayFor(modelItem => item.IdMaterialBaseNavigation.DescMaterial)
             </td>

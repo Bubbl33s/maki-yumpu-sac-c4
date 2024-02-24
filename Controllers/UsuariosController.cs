@@ -23,7 +23,11 @@ namespace MakiYumpuSAC.Controllers
         // GET: Usuarios
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Usuarios.ToListAsync());
+            return View(
+                await _context.Usuarios
+                .Where(u => u.Activo)
+                .ToListAsync()
+                );
         }
 
         // GET: Usuarios/Details/5
@@ -155,6 +159,28 @@ namespace MakiYumpuSAC.Controllers
         private bool UsuarioExists(int id)
         {
             return _context.Usuarios.Any(e => e.IdUsuario == id);
+        }
+
+        public async Task<IActionResult> Inactivos()
+        {
+            return View(
+                await _context.Usuarios
+                .Where(u => !u.Activo)
+                .ToListAsync()
+                );
+        }
+
+        public async Task<IActionResult> Reactivar(int id)
+        {
+            var usuario = await _context.Usuarios.FindAsync(id);
+
+            if (usuario != null)
+            {
+                usuario.Activo = true;
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }

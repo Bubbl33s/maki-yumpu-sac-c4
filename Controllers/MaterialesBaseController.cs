@@ -23,7 +23,12 @@ namespace MakiYumpuSAC.Controllers
         // GET: MaterialBase
         public async Task<IActionResult> Index()
         {
-            return View(await _context.MaterialBases.ToListAsync());
+
+            return View(
+                await _context.MaterialBases
+                .Where(m => m.Activo)
+                .ToListAsync()
+                );
         }
 
         // GET: MaterialBase/Details/5
@@ -175,5 +180,29 @@ namespace MakiYumpuSAC.Controllers
         {
             return _context.MaterialBases.Any(e => e.IdMaterialBase == id);
         }
+
+        public async Task<IActionResult> Inactivos()
+        {
+            return View(
+                await _context.MaterialBases
+                .Where(m => !m.Activo)
+                .ToListAsync()
+                );
+        }
+
+        [HttpPost, ActionName("Reactivar")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Reactivar(int id)
+        {
+            var material = await _context.MaterialBases.FindAsync(id);
+            if (material != null)
+            {
+                material.Activo = true;
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
     }
 }

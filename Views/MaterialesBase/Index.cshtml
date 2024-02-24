@@ -6,9 +6,14 @@
 
 <h4>Materiales Base</h4>
 
-<p>
+<div class="d-flex justify-content-between align-items-center mb-2">
     <a asp-action="Create">Nuevo Material Base</a>
-</p>
+    <div class="d-flex justify-content-between align-items-center mb-2 gap-2">
+        <a class="btn btn-outline-secondary" asp-controller="Materiales" asp-action="Index">Materiales</a>
+        <a class="btn btn-outline-secondary" asp-action="Inactivos">Materiales Inactivos</a>
+    </div>
+</div>
+
 <table class="table">
     <thead>
         <tr>
