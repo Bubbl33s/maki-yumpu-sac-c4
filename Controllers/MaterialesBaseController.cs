@@ -166,10 +166,21 @@ namespace MakiYumpuSAC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var materialBase = await _context.MaterialBases.FindAsync(id);
+            var materialBase = await _context.MaterialBases
+                .Include(mb => mb.Materials)
+                .FirstOrDefaultAsync(mb => mb.IdMaterialBase == id);
+            
             if (materialBase != null)
             {
+                foreach (var material in materialBase.Materials)
+                {
+                    Console.WriteLine(material.ToString());
+                    Console.WriteLine(1);
+                    material.Activo = false;
+                }  
+
                 materialBase.Activo = false;
+
                 await _context.SaveChangesAsync();
             }
 

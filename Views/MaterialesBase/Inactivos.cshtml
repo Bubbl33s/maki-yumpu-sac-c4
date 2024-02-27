@@ -39,6 +39,7 @@
                 </td>
                 <td>
                     <form asp-action="Reactivar">
+                        <a class="btn btn-outline-primary" asp-action="Details" asp-route-id="@item.IdMaterialBase">Detalles</a>
                         <input type="hidden" name="id" value="@item.IdMaterialBase" />
                         <input class="btn btn-outline-success" type="submit" value="Reactivar" />
                     </form>

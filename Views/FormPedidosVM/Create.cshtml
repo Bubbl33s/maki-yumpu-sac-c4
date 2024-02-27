@@ -2,6 +2,13 @@
     ViewData["Title"] = "Pedidos";
 }
 
+@section Head {
+    <link
+        href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
+        rel="stylesheet"
+    />
+}
+
 <div class="card">
     <div class="card-header">
         Pedidos
@@ -17,7 +24,7 @@
         </div>
         <div>
             <label class="form-label">País</label>
-            <input class="form-control form-control-sm" type="text" id="pais-cliente" />
+            <select asp-items="ViewBag.Countries" style="width: 100%" id="pais-cliente" placeholder="Selecciona un país"></select>
         </div>
         <hr />
         <div class="row align-items-end">
@@ -57,8 +64,11 @@
     </div>
 </div>
 
-@section Scripts {
+@section Scripts {    
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
+        $('select').select2();
+
         $("#btn-agregar").on("click", () => {
             $("#tabla-pedido").append(
                 $("<tr>").append(
@@ -89,7 +99,7 @@
 
             let oFormPedidoVM = {
                 oFormPedido: {
-                    NombreCompletCliente: $("#nombre-completo-cliente").val(),
+                    NombreCompletoCliente: $("#nombre-completo-cliente").val(),
                     CorreoCliente: $("#correo-cliente").val(),
                     PaisCliente: $("#pais-cliente").val(),
                     Fecha: fecha

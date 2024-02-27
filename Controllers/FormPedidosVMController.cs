@@ -1,5 +1,6 @@
 ﻿using MakiYumpuSAC.Models;
 using MakiYumpuSAC.Models.ViewModels;
+using MakiYumpuSAC.Resources;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,6 +23,8 @@ namespace MakiYumpuSAC.Controllers
 
         public IActionResult Create()
         {
+            ViewData["Countries"] = Utilities.CountriesOptions();
+
             return View();
         }
 

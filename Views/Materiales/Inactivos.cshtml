@@ -29,7 +29,8 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.IdMaterialBaseNavigation.IdMaterialBase) - @Html.DisplayFor(modelItem => item.IdMaterialBaseNavigation.DescMaterial)
+                    @Html.DisplayFor(modelItem => item.IdMaterialBaseNavigation.CodigoMaterial) -
+                    @Html.DisplayFor(modelItem => item.IdMaterialBaseNavigation.DescMaterial)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.IdPantone)
@@ -40,7 +41,19 @@
                 <td>
                     <form asp-action="Reactivar">
                         <input type="hidden" name="id" value="@item.IdMaterial" />
-                        <input class="btn btn-outline-success" type="submit" value="Reactivar" />
+                        @{
+                            if (!item.IdMaterialBaseNavigation.Activo)
+                            {
+                                <input
+                                    class="btn btn-outline-secondary" type="button" value="Reactivar"
+                                    title="Reactivar material base primero"
+                                />
+                            }
+                            else
+                            {
+                                <input class="btn btn-outline-success" type="submit" value="Reactivar" />
+                            }
+                        }
                     </form>
                 </td>
             </tr>
