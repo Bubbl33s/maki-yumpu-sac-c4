@@ -10,10 +10,12 @@ namespace MakiYumpuSAC.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly MakiYumpuSacContext _context;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, MakiYumpuSacContext context)
         {
             _logger = logger;
+            _context = context;
         }
 
         public IActionResult Index()
@@ -24,6 +26,37 @@ namespace MakiYumpuSAC.Controllers
         public IActionResult IndexAdmin()
         {
             return View();
+        }
+
+        public IActionResult PedidoCliente()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> PedidoCliente([Bind("IdFormPedido,NombreCompletoCliente,CorreoCliente,PaisCliente,Fecha")] FormPedido formPedido, DetalleFormPedido[] detalles)
+        {
+            try
+            {
+                formPedido.Fecha = DateTime.Now;
+                _context.Add(formPedido);
+                await _context.SaveChangesAsync();
+
+                foreach (var detalle in detalles)
+                {
+                    detalle.IdFormPedido = formPedido.IdFormPedido;
+                    _context.Add(detalle);
+                }
+
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return View(formPedido);
+            }
         }
 
         public IActionResult Privacy()
