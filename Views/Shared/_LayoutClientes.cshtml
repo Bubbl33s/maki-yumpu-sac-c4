@@ -4,41 +4,80 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - MakiYumpuSAC</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="~/MakiYumpuSAC.styles.css" asp-append-version="true" />
+    @RenderSection("Head", required: false)
+    <link rel="stylesheet" href="~/css/layout_clientes.css" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">MakiYumpuSAC</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1 justify-content-end">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Inicio" asp-action="IniciarSesion">Iniciar Sesión</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+    <!-- Barra de Opciones -->
+    <header class="encabezado">
+        <a href="#" class="logo"><img src="~/img/logo.png" alt="" class="logo-img"><span class="logo-texto">Maki Yumpu S.A.C</span></a>
+        <input type="checkbox" id="menu-barra">
+        <label for="menu-barra" class="iconos">
+            <i class="bi bi-list" id="icono-menu"></i>
+            <i class="bi bi-x" id="icono-cerrar"></i>
+        </label>
+        <nav class="navbar">
+            <ul>
+                <li><a asp-controller="Home" asp-action="Index">Inicio</a></li>
+                <li><a href="@Url.Action("Index", "Home")#coleccion">Colección</a></li>
+                <li><a asp-controller="Home" asp-action="">Pedidos</a></li>
+                <li><a asp-controller="Home" asp-action="">Contacto</a></li>
+            </ul>
         </nav>
     </header>
-    <div class="container">
+
+    <div class="">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container d-flex justify-content-center">
-            &copy; 2024 - MakiYumpuSAC
+    <!-- Footer -->
+    <footer>
+        <div class="info">
+            <div class="tamaño nosotros">
+                <h2>Nosotros</h2>
+                <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Autem eius sit 
+                    fugiat dolorem eum ipsa neque quos officia, magni sequi?
+                </p>
+                <div class="redes">
+                    <ul class="ul-info">
+                        <li class="li-info"><a href="#" class="a-info"><i class="bi bi-facebook"></i></a></li>
+                        <li class="li-info"><a href="#" class="a-info"><i class="bi bi-instagram"></i></a></li>
+                        <li class="li-info"><a href="#" class="a-info"><i class="bi bi-twitter"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="tamaño contacto">
+                <h2>Contacto</h2>
+                <ul class="ul-info">
+                    <li class="li-info">
+                        <span><i class="bi bi-geo-alt"></i></span>
+                        <p>
+                            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Possimus, eius.
+                        </p>
+                    </li>
+                    <li class="li-info">
+                        <span><i class="bi bi-envelope"></i></span>
+                        <a href="#" class="a-info">MakiYumpu@sac.com</a>
+                    </li>
+                    <li class="li-info">
+                        <span><i class="bi bi-telephone"></i></span>
+                        <a href="#" class="a-info">+51 999 888 777</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="tamaño link">
+                <h2>Trabajadores</h2>
+                <ul>
+                    <li><a class="a-info" asp-controller="Inicio" asp-action="IniciarSesion">Iniciar Sesión</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="derechos">
+            <p>&copy; 2024 Maki Yumpu S.A.C</p>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

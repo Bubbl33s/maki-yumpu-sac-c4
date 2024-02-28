@@ -1,0 +1,120 @@
+﻿
+/*<-------------- Portada -------------->*/
+.contenedor {
+    position: relative;
+    width: 100%;
+    max-width: auto;
+    height: 70vh;
+    margin: auto;
+    background: url("https://i.pinimg.com/originals/7f/58/9b/7f589bccf04b315b5669b9622a4985bd.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.description {
+    position: absolute;
+    white-space: pre-line;
+    top: 47%;
+    left: 25%;
+    transform: translate(-50%, -50%);
+}
+
+.description p {
+    font-size: 2em;
+    font-weight: bold;
+    color: #fff;
+}
+
+#coleccion {
+    scroll-margin-top: 90px;
+    display: block;
+    position: relative;
+}
+
+/*<-------------- Pedidos De Nuestros Clientes -------------->*/
+.contenedor-2 {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: auto;
+    max-width: 1150px;
+}
+
+.seccion-2 {
+    position: relative;
+}
+
+.seccion-2::before {
+    content: '';
+    background-image: url(https://media.istockphoto.com/id/814553238/es/vector/patr%C3%B3n-sin-fisuras-con-iconos-de-l%C3%ADnea-fina-de-coser-equipo-m%C3%A1quina-de-coser-hilo-aguja.jpg?s=612x612&w=0&k=20&c=sCUimKq1WvP3IlktTJY6WhPHcJk3c4DFGyWkyW_nPzE=);
+    position: absolute;
+    opacity: 0.2;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+.seccion-2 .coleccion-clientes {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+    font-weight: bold;
+    padding-top: 50px;
+    padding-bottom: 25px;
+}
+
+.tarjeta {
+    width: calc(33.33% - 40px);
+    margin: 20px;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0px 1px 10px rgba(0, 0, 0, 0.2);
+    background-color: white;
+    cursor: pointer;
+    transition: all 400ms ease;
+    flex-grow: 1;
+}
+
+.tarjeta:hover {
+    box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.2);
+    transform: translateY(-3%);
+}
+
+.tarjeta .produto-img {
+    width: 150px;
+    display: block;
+    margin: 0 auto;
+    padding: 15px;
+}
+
+.tarjeta .contenido {
+    padding: 15px;
+    text-align: center;
+}
+
+.tarjeta .contenido p {
+    line-height: 1.5;
+    color: black;
+}
+
+.tarjeta .contenido h3 {
+    font-weight: 400;
+    margin-bottom: 15px;
+}
+
+.tarjeta .contenido a {
+    text-decoration: none;
+    display: inline-block;
+    padding: 10px;
+    margin-top: 10px;
+    color: #144ac9;
+    border: 1px solid #6893FC;
+    border-radius: 4px;
+    transition: all 400ms ease;
+}
+
+.tarjeta .contenido a:hover {
+    background: #6893FC;
+    color: #fff;
+}
