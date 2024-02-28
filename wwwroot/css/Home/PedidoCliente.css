@@ -1,0 +1,204 @@
+﻿* {
+    outline: none;
+    border: none;
+    transition: all .2s linear;
+}
+
+.formulario-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.fondo-form {
+    margin-top: 150px;
+    margin-bottom: 50px;
+    position: relative;
+}
+
+.fondo-form::before {
+    content: '';
+    background-image: url(https://img.freepik.com/vector-premium/patron-costuras-ropa-mujer-accesorios-linea-icono-vector-ilustracion_263366-819.jpg);
+    position: absolute;
+    opacity: 0.2;
+    width: calc(100% + 20px);
+    height: calc(100% + 350px);
+    top: -150px;
+    left: -20px;
+    z-index: -1;
+}
+
+.caja-pedido {
+    width: 70%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+    background-color: #fff;
+    border-radius: 10px;
+    -webkit-box-shadow: 0px 0px 13px 4px rgba(0,0,0,0.26);
+    -moz-box-shadow: 0px 0px 13px 4px rgba(0,0,0,0.26);
+    box-shadow: 0px 0px 13px 4px rgba(0,0,0,0.26);
+}
+
+.detalles {
+    padding: 15px;
+    margin-bottom: 40%;
+    width: calc(50% - 5px);
+}
+
+.detalles {
+    width: calc(50% - 10px);
+    overflow: auto;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th,
+.table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.table th {
+    background-color: #f2f2f2;
+}
+
+.table th:nth-child(1) {
+    width: 30%;
+}
+
+.table th:nth-child(2) {
+    width: 50%;
+}
+
+.table th:nth-child(3) {
+    width: 20%;
+}
+
+.info-pedido label {
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.form {
+    padding: 25px;
+    width: calc(55% - 10px);
+}
+
+.form-titulo {
+    text-align: center;
+    position: relative;
+    padding: 0 0 10px;
+    margin-bottom: 10px;
+}
+
+.form-titulo-tabla {
+    text-align: center;
+    position: relative;
+    padding: 0 0 10px;
+    margin-bottom: 10px;
+}
+
+.form-titulo::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    height: 4px;
+    width: 50px;
+    border-radius: 2px;
+    background-color: rgb(208, 172, 109);
+}
+
+.form-titulo-tabla::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    height: 4px;
+    width: 50px;
+    border-radius: 2px;
+    background-color: rgb(208, 172, 109);
+}
+
+.inputs {
+    width: 100%;
+    border: 2px solid rgba(230, 230, 230, 0.6);
+    border-radius: 5px;
+    padding: .5rem 1rem;
+    margin-top: 10px;
+    margin-bottom: 22px;
+    transition: .3s;
+}
+
+.inputs:hover {
+    background-color: rgba(213, 114, 114, 0.1);
+}
+
+textarea {
+    min-height: 200px;
+    resize: none;
+}
+
+.btn-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.btn {
+    width: 50%;
+    padding: 5.rem 1rem;
+    background-color: #fff;
+    color: black;
+    font-weight: bold;
+    font-size: 1.1rem;
+    border: 2px solid black;
+    cursor: pointer;
+    transition: .3s;
+    padding: 10px;
+    border-radius: 25px;
+}
+
+.btn:hover {
+    color: #fff;
+    background-color: black;
+}
+
+.inputs:focus {
+    border: 2px solid rgb(186, 164, 87);
+    background: #fff;
+}
+
+@media screen and (max-width: 1335px) {
+    .form {
+        width: 100%;
+    }
+
+    .detalles {
+        width: 100%;
+    }
+
+    .caja-pedido {
+        display: flex;
+        flex-direction: column;
+        width: 90%;
+    }
+
+
+    .detalles {
+        margin-top: 20px;
+    }
+}

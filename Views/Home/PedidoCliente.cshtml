@@ -1,0 +1,59 @@
+﻿@{
+    Layout = "/Views/Shared/_LayoutClientes.cshtml";
+}
+
+@section Head {
+    <link rel="stylesheet" href="~/css/Home/PedidoCliente.css" asp-append-version="true" />
+}
+
+<section class="fondo-form">
+    <div class="formulario-container">
+        <div class="caja-pedido">
+            <div class="form">
+                <h1 class="form-titulo">Realiza tu Pedido</h1>
+                <div class="info-pedido">
+                    <label>Nombre Completo</label>
+                    <input type="text" id="nombre-completo-cliente" placeholder="Ingrese su nombre completo" class="inputs" />
+                </div>
+                <div class="info-pedido">
+                    <label>Correo</label>
+                    <input type="email" id="correo-cliente" placeholder="Ingrese su correo electronico" class="inputs" />
+                </div>
+                <div class="info-pedido">
+                    <label>Pais</label>
+                    <input type="text" id="pais-cliente" placeholder="Ingrese su pais" class="inputs" />
+                </div>
+                <div class="info-pedido">
+                    <label>Prenda</label>
+                    <input type="text" id="desc-prenda" placeholder="Ingrese la prenda" class="inputs" />
+                </div>
+                <div class="info-pedido">
+                    <label>Cantidad</label>
+                    <input type="number" step="1" id="cantidad-prenda" placeholder="Ingrese la cantidad" class="inputs" />
+                </div>
+                <div class="info-pedido">
+                    <label>Descripción detallada</label>
+                    <textarea id="desc-detallada-prenda" placeholder="Ingrese los detalles" class="inputs"></textarea>
+                </div>
+                <div class="btn-container">
+                    <button class="btn" id="btn-agregar">Agregar</button>
+                    <button class="btn" id="btn-finalizar">Finalizar</button>
+                </div>
+            </div>
+            <div class="detalles">
+                <h1 class="form-titulo-tabla">Pedidos Realizados</h1>
+                <table class="table" id="tabla-pedido">
+                    <thead>
+                        <tr>
+                            <th>Prenda</th>
+                            <th>Descripción detallada</th>
+                            <th>Cantidad</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
