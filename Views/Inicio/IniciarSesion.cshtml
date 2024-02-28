@@ -1,36 +1,30 @@
-﻿﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@{
     Layout = "/Views/Shared/_LayoutClientes.cshtml";
 }
 
-<div class="container mt-5 pt-5">
-    <div class="row justify-content-center">
-        <div class="col-12 col-xl-4 col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    Iniciar Sesión
-                </div>
-                <div class="card-body">
-                    <form asp-controller="Inicio" asp-action="IniciarSesion" method="post">
-                        <input name="login" class="form-control mb-3" type="text" placeholder="Usuario" required />
-                        <input name="password" class="form-control mb-3" type="password" placeholder="Contraseña" required />
-                        <div class="d-grid gap-2 mb-3">
-                            <button class="btn btn-primary" type="submit">Iniciar Sesión</button>
-                        </div>
+@section Head {
+    <link rel="stylesheet" href="~/css/Home/IniciarSesion.css" asp-append-version="true" />
+}
 
-                        @if (ViewData["Mensaje"] != null)
-                        {
-                            <div class="form-group">
-                                <div class="alert alert-danger" role="alert">
-                                    @ViewData["Mensaje"]
-                                </div>
-                            </div>
-                        }
-                    </form>
+<section>
+    <div class="contenedor">
+        <div class="formulario">
+            <form asp-controller="Inicio" asp-action="IniciarSesion" method="post">
+                <h2>Iniciar Sesión</h2>
+                <div class="input-contenedor">
+                    <i class="bi bi-envelope"></i>
+                    <input name="login" class="form-control mb-3" type="text" required />
+                    <label for="#">Usuario</label>
                 </div>
-            </div>
+                <div class="input-contenedor">
+                    <i class="bi bi-lock"></i>
+                    <input name="password" class="form-control mb-3" type="password" required />
+                    <label for="#">Contraseña</label>
+                </div>
+                <div>
+                    <button class="btn btn-primary" type="submit">Iniciar Sesión</button>
+                </div>
+            </form>
         </div>
     </div>
-</div>
+</section>
