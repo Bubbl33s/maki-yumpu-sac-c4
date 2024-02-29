@@ -1,4 +1,5 @@
 using MakiYumpuSAC.Models;
+using MakiYumpuSAC.Resources;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
@@ -30,6 +31,8 @@ namespace MakiYumpuSAC.Controllers
 
         public IActionResult PedidoCliente()
         {
+            ViewData["Paises"] = Utilities.CountriesOptions();
+
             return View();
         }
 

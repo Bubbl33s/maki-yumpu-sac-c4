@@ -2,13 +2,6 @@
     ViewData["Title"] = "Pedidos";
 }
 
-@section Head {
-    <link
-        href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
-        rel="stylesheet"
-    />
-}
-
 <div class="card">
     <div class="card-header">
         Pedidos
@@ -24,7 +17,8 @@
         </div>
         <div>
             <label class="form-label">País</label>
-            <select asp-items="ViewBag.Countries" style="width: 100%" id="pais-cliente" placeholder="Selecciona un país"></select>
+            <!-- <input type="text" id="pais-cliente" placeholder="Ingrese su pais" class="inputs" /> -->
+            <select asp-items="ViewBag.Countries" id="pais-cliente" placeholder="Selecciona un país"></select>
         </div>
         <hr />
         <div class="row align-items-end">
