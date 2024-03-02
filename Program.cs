@@ -14,6 +14,7 @@ builder.Services.AddDbContext<MakiYumpuSacContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("MakiYumpuDBConn")));
 
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>

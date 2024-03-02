@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MakiYumpuSAC.Models;
 using Microsoft.AspNetCore.Authorization;
+using MakiYumpuSAC.Resources;
 
 namespace MakiYumpuSAC.Controllers
 {
@@ -64,6 +65,7 @@ namespace MakiYumpuSAC.Controllers
             if (ModelState.IsValid)
             {
                 usuario.Activo = true;
+                // TODO: PROBAR usuario.PasswordUsuario = Utilities.EncryptKey(usuario.PasswordUsuario);
                 _context.Add(usuario);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
