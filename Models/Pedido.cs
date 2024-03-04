@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace MakiYumpuSAC.Models;
 
@@ -15,7 +16,8 @@ public partial class Pedido
 
     public int IdUsuario { get; set; }
 
-    public int EstadoPedidoId { get; set; }
+    [Required(ErrorMessage = "")]
+    public string? EstadoPedidoId { get; set; }
 
     public virtual ICollection<DetallePedido> DetallePedidos { get; set; } = new List<DetallePedido>();
 

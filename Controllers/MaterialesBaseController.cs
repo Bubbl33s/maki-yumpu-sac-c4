@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MakiYumpuSAC.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Data.SqlClient;
+using MakiYumpuSAC.Resources;
 
 namespace MakiYumpuSAC.Controllers
 {
@@ -23,10 +25,9 @@ namespace MakiYumpuSAC.Controllers
         // GET: MaterialBase
         public async Task<IActionResult> Index()
         {
-
             return View(
                 await _context.MaterialBases
-                .Where(m => m.Activo)
+                .Where(mb => mb.Activo)
                 .ToListAsync()
                 );
         }
@@ -51,23 +52,6 @@ namespace MakiYumpuSAC.Controllers
             return View(materialBase);
         }
 
-        /*public async Task<IActionResult> Details(string id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var materialBase = await _context.MaterialBases
-                .FirstOrDefaultAsync(m => m.IdMaterialBase == id);
-            if (materialBase == null)
-            {
-                return NotFound();
-            }
-
-            return View(materialBase);
-        }*/
-
         // GET: MaterialBase/Create
         public IActionResult Create()
         {
@@ -83,11 +67,34 @@ namespace MakiYumpuSAC.Controllers
         {
             if (ModelState.IsValid)
             {
-                materialBase.Activo = true;
-                _context.Add(materialBase);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    materialBase.Activo = true;
+                    _context.Add(materialBase);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateException ex)
+                {
+                    if (Utilities.UniqueValidation(ex, "IX_MATERIAL_BASE_codigo_material"))
+                    {
+                        ViewData["ErrorMessage"] = "Ya existe un material con ese código";
+                    }
+                }
             }
+
+            else
+            {
+                foreach (var key in ModelState.Keys)
+                {
+                    var error = ModelState[key].Errors.FirstOrDefault();
+                    if (error != null)
+                    {
+                        ViewData["ErrorMessage"] = $"{error.ErrorMessage}";
+                    }
+                }
+            }
+
             return View(materialBase);
         }
 
@@ -214,6 +221,5 @@ namespace MakiYumpuSAC.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-
     }
 }

@@ -9,8 +9,10 @@ public partial class CardexMaterial
     [Key]
     public int IdMaterial { get; set; }
 
+    [Required(ErrorMessage = "Ingrese el tipo")]
     public bool Tipo { get; set; }
 
+    [Required(ErrorMessage = "La cantidad es requerida")]
     public decimal Cantidad { get; set; }
 
     public decimal Stock { get; set; }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace MakiYumpuSAC.Models;
 
@@ -10,6 +11,7 @@ public partial class Material
 
     public int IdMaterialBase { get; set; }
 
+    [Required(ErrorMessage = "Ingresa el ID Pantone")]
     public string IdPantone { get; set; } = null!;
 
     public string Hebras { get; set; } = null!;
