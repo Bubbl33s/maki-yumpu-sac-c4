@@ -65,9 +65,6 @@ namespace MakiYumpuSAC.Controllers
                     Contenido = "Prueba de email"
                 };
 
-                Console.WriteLine(email.Para);
-                Console.WriteLine("HOALALALLALALALAL");
-
                 _emailService.SendEmail(email);
 
                 return RedirectToAction(nameof(Index));
