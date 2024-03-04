@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
+using MakiYumpuSAC.Services.Contract;
 
 namespace MakiYumpuSAC.Controllers
 {
@@ -12,11 +13,14 @@ namespace MakiYumpuSAC.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly MakiYumpuSacContext _context;
+        private readonly IEmailService _emailService;
 
-        public HomeController(ILogger<HomeController> logger, MakiYumpuSacContext context)
+
+        public HomeController(ILogger<HomeController> logger, MakiYumpuSacContext context, IEmailService emailService)
         {
             _logger = logger;
             _context = context;
+            _emailService = emailService;
         }
 
         public IActionResult Index()
@@ -53,6 +57,15 @@ namespace MakiYumpuSAC.Controllers
                 }
 
                 await _context.SaveChangesAsync();
+
+                EmailDTO email = new()
+                {
+                    Para = formPedido.CorreoCliente,
+                    Asunto = "Pedido Realizado",
+                    Contenido = "Prueba de email"
+                };
+
+                _emailService.SendEmail(email);
 
                 return RedirectToAction(nameof(Index));
             }
