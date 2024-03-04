@@ -4,6 +4,9 @@ using MakiYumpuSAC.Services.Implementation;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.WebEncoders;
+using System.Text.Encodings.Web;
+using System.Text.Unicode;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +18,11 @@ builder.Services.AddDbContext<MakiYumpuSacContext>(options =>
 
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+
+builder.Services.Configure<WebEncoderOptions>(options =>
+    {
+        options.TextEncoderSettings = new TextEncoderSettings(UnicodeRanges.All);
+    });
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>

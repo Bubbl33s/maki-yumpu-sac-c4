@@ -13,12 +13,10 @@
             <div class="form-group">
                 <label asp-for="CodigoMaterial" class="control-label">Código</label>
                 <input asp-for="CodigoMaterial" class="form-control" />
-                <span asp-validation-for="IdMaterialBase" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="DescMaterial" class="control-label">Descripción</label>
                 <input asp-for="DescMaterial" class="form-control" />
-                <span asp-validation-for="DescMaterial" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Crear" class="btn btn-primary" />
@@ -27,3 +25,17 @@
         </form>
     </div>
 </div>
+
+@section Scripts {
+    <script type="module">
+        import toastMessage from '/js/toastMessage.js';
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const errorMessage = "@ViewBag.ErrorMessage";
+
+            if (errorMessage) {
+                toastMessage(errorMessage);
+            }
+        });
+    </script>
+}

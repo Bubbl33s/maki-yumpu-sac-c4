@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis.Options;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using System.Runtime.Intrinsics.Arm;
 using System.Security.Cryptography;
@@ -121,6 +123,14 @@ namespace MakiYumpuSAC.Resources
             */
 
             return new SelectList(paises);
+        }
+
+        public static bool UniqueValidation(DbUpdateException ex, string indexName)
+        {
+            var sqlException = ex.InnerException as SqlException;
+            return sqlException != null &&
+                sqlException.Number == 2601 &&
+                sqlException.Message.Contains(indexName);
         }
     }
 }

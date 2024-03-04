@@ -17,12 +17,10 @@
             <div class="form-group">
                 <label asp-for="IdPantone" class="control-label">ID Pantone</label>
                 <input asp-for="IdPantone" class="form-control" />
-                <span asp-validation-for="IdPantone" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Hebras" class="control-label"></label>
                 <select asp-for="Hebras" class="form-control" asp-items="ViewBag.Hebras"></select>
-                <span asp-validation-for="Hebras" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Crear" class="btn btn-primary" />
@@ -31,3 +29,17 @@
         </form>
     </div>
 </div>
+
+@section Scripts {
+    <script type="module">
+        import toastMessage from '/js/toastMessage.js';
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const errorMessage = "@ViewBag.ErrorMessage";
+
+            if (errorMessage) {
+                toastMessage(errorMessage);
+            }
+        });
+    </script>
+}

@@ -55,6 +55,7 @@ namespace MakiYumpuSAC.Controllers
         // GET: Materiales/Create
         public IActionResult Create()
         {
+            /*
             var materialesBases = _context.MaterialBases.ToList();
 
             var materialBaseItems = materialesBases.Select(mb => new SelectListItem
@@ -66,13 +67,11 @@ namespace MakiYumpuSAC.Controllers
             var selectList = new SelectList(materialBaseItems, "Value", "Text");
 
             ViewData["CodigoMaterialBase"] = selectList;
-            ViewData["Hebras"] = Utilities.HebrasOptions();
+            ViewData["Hebras"] = Utilities.HebrasOptions();*/
+
+            LoadData();
 
             return View();
-            /*
-            ViewData["IdMaterialBase"] = new SelectList(_context.MaterialBases, "IdMaterialBase", "IdMaterialBase");
-            return View();
-            */
         }
 
         // POST: Materiales/Create
@@ -84,12 +83,38 @@ namespace MakiYumpuSAC.Controllers
         {
             if (ModelState.IsValid)
             {
-                material.Activo = true;
-                _context.Add(material);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    material.Activo = true;
+                    _context.Add(material);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateException ex)
+                {
+                    LoadData();
+
+                    if (Utilities.UniqueValidation(ex, "UQ__MATERIAL__B586E7C0C0D9F1D6"))
+                    {
+                        ViewData["ErrorMessage"] = "Material ya existente, modifique algún valor";
+                    }
+                }
             }
-            ViewData["IdMaterialBase"] = new SelectList(_context.MaterialBases, "IdMaterialBase", "IdMaterialBase", material.IdMaterialBase);
+
+            else
+            {
+                foreach (var key in ModelState.Keys)
+                {
+                    var error = ModelState[key].Errors.FirstOrDefault();
+                    if (error != null)
+                    {
+                        ViewData["ErrorMessage"] = $"{error.ErrorMessage}";
+                    }
+                }
+
+                LoadData();
+            }
+
             return View(material);
         }
 
@@ -224,6 +249,19 @@ namespace MakiYumpuSAC.Controllers
             }
 
             return RedirectToAction(nameof(Index));
+        }
+
+        private void LoadData()
+        {
+            var materialesBases = _context.MaterialBases.ToList();
+            var materialBaseItems = materialesBases.Select(mb => new SelectListItem
+            {
+                Value = $"{mb.IdMaterialBase}",
+                Text = $"{mb.CodigoMaterial} - {mb.DescMaterial}"
+            }).ToList();
+            var selectList = new SelectList(materialBaseItems, "Value", "Text");
+            ViewData["CodigoMaterialBase"] = selectList;
+            ViewData["Hebras"] = Utilities.HebrasOptions();
         }
     }
 }

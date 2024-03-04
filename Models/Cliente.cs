@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace MakiYumpuSAC.Models;
 
@@ -10,6 +11,7 @@ public partial class Cliente
 
     public string NombreCompletoCliente { get; set; } = null!;
 
+    [EmailAddress(ErrorMessage = "Ingrese un correo válido")]
     public string? CorreoCliente { get; set; }
 
     public string? PaisCliente { get; set; }
