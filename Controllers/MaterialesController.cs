@@ -55,20 +55,6 @@ namespace MakiYumpuSAC.Controllers
         // GET: Materiales/Create
         public IActionResult Create()
         {
-            /*
-            var materialesBases = _context.MaterialBases.ToList();
-
-            var materialBaseItems = materialesBases.Select(mb => new SelectListItem
-            {
-                Value = $"{mb.IdMaterialBase}",
-                Text = $"{mb.CodigoMaterial} - {mb.DescMaterial}"
-            }).ToList();
-
-            var selectList = new SelectList(materialBaseItems, "Value", "Text");
-
-            ViewData["CodigoMaterialBase"] = selectList;
-            ViewData["Hebras"] = Utilities.HebrasOptions();*/
-
             LoadData();
 
             return View();
@@ -103,16 +89,8 @@ namespace MakiYumpuSAC.Controllers
 
             else
             {
-                foreach (var key in ModelState.Keys)
-                {
-                    var error = ModelState[key].Errors.FirstOrDefault();
-                    if (error != null)
-                    {
-                        ViewData["ErrorMessage"] = $"{error.ErrorMessage}";
-                    }
-                }
-
                 LoadData();
+                Utilities.ModelValidations(ModelState, ViewData);
             }
 
             return View(material);
@@ -132,18 +110,7 @@ namespace MakiYumpuSAC.Controllers
                 return NotFound();
             }
 
-            var materialesBases = _context.MaterialBases.ToList();
-
-            var materialBaseItems = materialesBases.Select(mb => new SelectListItem
-            {
-                Value = $"{mb.IdMaterialBase}",
-                Text = $"{mb.CodigoMaterial} - {mb.DescMaterial}"
-            }).ToList();
-
-            var selectList = new SelectList(materialBaseItems, "Value", "Text");
-
-            ViewData["CodigoMaterialBase"] = selectList;
-            ViewData["Hebras"] = Utilities.HebrasOptions();
+            LoadData();
 
             return View(material);
         }
@@ -167,6 +134,8 @@ namespace MakiYumpuSAC.Controllers
                     material.Activo = true;
                     _context.Update(material);
                     await _context.SaveChangesAsync();
+
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -179,9 +148,22 @@ namespace MakiYumpuSAC.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                catch (DbUpdateException ex)
+                {
+                    LoadData();
+
+                    if (Utilities.UniqueValidation(ex, "UQ__MATERIAL__B586E7C0C0D9F1D6"))
+                    {
+                        ViewData["ErrorMessage"] = "Material ya existente, modifique algún valor";
+                    }
+                }
             }
-            ViewData["IdMaterialBase"] = new SelectList(_context.MaterialBases, "IdMaterialBase", "IdMaterialBase", material.IdMaterialBase);
+            else
+            {
+                LoadData();
+                Utilities.ModelValidations(ModelState, ViewData);
+            }
+
             return View(material);
         }
 
@@ -228,27 +210,42 @@ namespace MakiYumpuSAC.Controllers
         // GET: Materiales
         public async Task<IActionResult> Inactivos()
         {
-            return View(
-                await _context.Materials
+            var materialesInactivos = await _context.Materials
                 .Include(m => m.IdMaterialBaseNavigation)
                 .Where(m => !m.Activo)
-                .ToListAsync()
-                );
+                .ToListAsync();
+
+            return View(materialesInactivos);
         }
 
-        [HttpPost, ActionName("Reactivar")]
+        [HttpPost, ActionName("Inactivos")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Reactivar(int id)
+        public async Task<IActionResult> Inactivos(int id)
         {
-            var material = await _context.Materials.FindAsync(id);
-            
+            var material = await _context.Materials
+                                 .Include(m => m.IdMaterialBaseNavigation)
+                                 .FirstOrDefaultAsync(m => m.IdMaterial == id);
+
             if (material != null)
             {
-                material.Activo = true;
-                await _context.SaveChangesAsync();
+                if (material.IdMaterialBaseNavigation.Activo)
+                {
+                    material.Activo = true;
+                    await _context.SaveChangesAsync();
+                    ViewData["DoneMessage"] = "Material reactivado";
+                }
+                else
+                {
+                    ViewData["ErrorMessage"] = "Reactive el material base primero";
+                }
             }
 
-            return RedirectToAction(nameof(Index));
+            var materialesInactivos = await _context.Materials
+                .Include(m => m.IdMaterialBaseNavigation)
+                .Where(m => !m.Activo)
+                .ToListAsync();
+
+            return View(materialesInactivos);
         }
 
         private void LoadData()

@@ -37,9 +37,7 @@
         document.addEventListener("DOMContentLoaded", function () {
             const errorMessage = "@ViewBag.ErrorMessage";
 
-            if (errorMessage) {
-                toastMessage(errorMessage);
-            }
+            errorMessage && toastMessage(errorMessage, "error");
         });
     </script>
 }

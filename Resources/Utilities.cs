@@ -143,7 +143,7 @@ namespace MakiYumpuSAC.Resources
                 if (error != null)
                 {
                     viewData["ErrorMessage"] = $"{error.ErrorMessage}";
-                    return; // Salir del bucle después de establecer el primer mensaje de error
+                    return;
                 }
             }
         }

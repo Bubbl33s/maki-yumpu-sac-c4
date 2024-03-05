@@ -207,25 +207,30 @@ namespace MakiYumpuSAC.Controllers
 
         public async Task<IActionResult> Inactivos()
         {
-            return View(
-                await _context.MaterialBases
+            var materialesInactivos = await _context.MaterialBases
                 .Where(m => !m.Activo)
-                .ToListAsync()
-                );
+                .ToListAsync();
+
+            return View(materialesInactivos);
         }
 
-        [HttpPost, ActionName("Reactivar")]
+        [HttpPost, ActionName("Inactivos")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Reactivar(int id)
+        public async Task<IActionResult> Inactivos(int id)
         {
             var material = await _context.MaterialBases.FindAsync(id);
             if (material != null)
             {
                 material.Activo = true;
                 await _context.SaveChangesAsync();
+                ViewData["DoneMessage"] = "Material reactivado";
             }
 
-            return RedirectToAction(nameof(Index));
+            var materialesInactivos = await _context.MaterialBases
+                .Where(m => !m.Activo)
+                .ToListAsync();
+
+            return View(materialesInactivos);
         }
     }
 }
