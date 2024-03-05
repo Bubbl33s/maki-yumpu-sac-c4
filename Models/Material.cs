@@ -9,11 +9,13 @@ public partial class Material
 {
     public int IdMaterial { get; set; }
 
+    [Required(ErrorMessage = "Seleccione el material base")]
     public int IdMaterialBase { get; set; }
 
     [Required(ErrorMessage = "Ingresa el ID Pantone")]
     public string IdPantone { get; set; } = null!;
 
+    [Required(ErrorMessage = "Seleccione las hebras")]
     public string Hebras { get; set; } = null!;
 
     [DefaultValue(true)]
