@@ -85,21 +85,14 @@ namespace MakiYumpuSAC.Controllers
 
             else
             {
-                foreach (var key in ModelState.Keys)
-                {
-                    var error = ModelState[key].Errors.FirstOrDefault();
-                    if (error != null)
-                    {
-                        ViewData["ErrorMessage"] = $"{error.ErrorMessage}";
-                    }
-                }
+                Utilities.ModelValidations(ModelState, ViewData);
             }
 
             return View(materialBase);
         }
 
         // GET: MaterialBase/Edit/5
-        public async Task<IActionResult> Edit(string id)
+        public async Task<IActionResult> Edit(int id)
         {
             if (id == null)
             {
@@ -133,6 +126,8 @@ namespace MakiYumpuSAC.Controllers
                     materialBase.Activo = true;
                     _context.Update(materialBase);
                     await _context.SaveChangesAsync();
+
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -145,8 +140,19 @@ namespace MakiYumpuSAC.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                catch (DbUpdateException ex)
+                {
+                    if (Utilities.UniqueValidation(ex, "IX_MATERIAL_BASE_codigo_material"))
+                    {
+                        ViewData["ErrorMessage"] = "Ya existe un material con ese código";
+                    }
+                }
             }
+            else
+            {
+                Utilities.ModelValidations(ModelState, ViewData);
+            }
+
             return View(materialBase);
         }
 

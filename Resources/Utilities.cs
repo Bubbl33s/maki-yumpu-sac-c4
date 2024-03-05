@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.CodeAnalysis.Options;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -131,6 +133,19 @@ namespace MakiYumpuSAC.Resources
             return sqlException != null &&
                 sqlException.Number == 2601 &&
                 sqlException.Message.Contains(indexName);
+        }
+
+        public static void ModelValidations(ModelStateDictionary modelState, ViewDataDictionary viewData)
+        {
+            foreach (var key in modelState.Keys)
+            {
+                var error = modelState[key].Errors.FirstOrDefault();
+                if (error != null)
+                {
+                    viewData["ErrorMessage"] = $"{error.ErrorMessage}";
+                    return; // Salir del bucle después de establecer el primer mensaje de error
+                }
+            }
         }
     }
 }
