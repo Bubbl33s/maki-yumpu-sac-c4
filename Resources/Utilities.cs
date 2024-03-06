@@ -142,7 +142,7 @@ namespace MakiYumpuSAC.Resources
                 var error = modelState[key].Errors.FirstOrDefault();
                 if (error != null)
                 {
-                    viewData["ErrorMessage"] = $"{error.ErrorMessage}";
+                    viewData["ErrorMessage"] = $"{key} {error.ErrorMessage}";
                     return;
                 }
             }

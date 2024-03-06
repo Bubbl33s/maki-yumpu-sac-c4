@@ -13,18 +13,17 @@
             <div class="form">
                 <h1 class="form-titulo">Realiza tu Pedido</h1>
                 <div class="info-pedido">
-                    <label name ="NombreCompletoCliente">Nombre Completo</label>
-                    <input name="NombreCompletoCliente" type="text" id="nombre-completo-cliente" placeholder="Ingrese su nombre completo" class="inputs" />
+                    <label name ="cliente.NombreCompletoCliente">Nombre Completo</label>
+                    <input name="cliente.NombreCompletoCliente" type="text" id="nombre-completo-cliente" placeholder="Ingrese su nombre completo" class="inputs" />
                 </div>
                 <div class="info-pedido">
-                    <label name="CorreoCliente">Correo</label>
-                    <input name="CorreoCliente" type="email" id="correo-cliente" placeholder="Ingrese su correo electronico" class="inputs" />
+                    <label name="cliente.CorreoCliente">Correo</label>
+                    <input name="cliente.CorreoCliente" type="email" id="correo-cliente" placeholder="Ingrese su correo electronico" class="inputs" />
                 </div>
                 <div class="info-pedido">
-                    <label name="PaisCliente">Pais</label>
-                    <!-- <input name="PaisCliente" type="text" id="pais-cliente" placeholder="Ingrese su pais" class="inputs" /> -->
+                    <label name="cliente.PaisCliente">Pais</label>
                     <div id="pais-container">
-                        <select name="PaisCliente" style="width: 100%;" asp-items="ViewBag.Paises"></select>
+                        <select name="cliente.PaisCliente" style="width: 100%;" asp-items="ViewBag.Paises"></select>
                     </div>
                 </div>
                 <div class="info-pedido">
@@ -41,10 +40,12 @@
                 </div>
                 <div class="btn-container">
                     <button class="btn" id="btn-agregar">Agregar</button>
+
+                    <input type="hidden" id="contenido-html" name="tablaHTML" />
                     <button type="submit" class="btn" id="btn-finalizar">Finalizar</button>
                 </div>
             </div>
-            <div class="detalles">
+            <div class="detalles" id="detalles">
                 <h1 class="form-titulo-tabla">Pedidos Realizados</h1>
                 <table class="table" id="tabla-pedido">
                     <thead>
@@ -64,6 +65,17 @@
 
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script type="module">
+        import toastMessage from '/js/toastMessage.js';
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const errorMessage = "@ViewBag.ErrorMessage";
+            errorMessage && toastMessage(errorMessage, "error");
+
+            const doneMessage = "@ViewBag.DoneMessage";
+            doneMessage && toastMessage(doneMessage, "success");
+        });
+    </script>
     <script>
         $(document).ready(() => {
             let detalleCount = 0;
@@ -93,6 +105,12 @@
             });
 
             $("select").select2();
+
+            $("#btn-finalizar").on("click", function () {
+                var tableHtml = $("#detalles").html(); // Obtener el HTML de la tabla
+                $("#contenido-html").val(tableHtml); // Colocar el HTML en un campo oculto
+            });
+
         });
     </script>
 }

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
 using MakiYumpuSAC.Services.Contract;
+using Microsoft.EntityFrameworkCore;
 
 namespace MakiYumpuSAC.Controllers
 {
@@ -35,44 +36,92 @@ namespace MakiYumpuSAC.Controllers
 
         public IActionResult PedidoCliente()
         {
-            ViewData["Paises"] = Utilities.CountriesOptions();
+            LoadData();
 
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> PedidoCliente([Bind("IdFormPedido,NombreCompletoCliente,CorreoCliente,PaisCliente,Fecha")] FormPedido formPedido, DetalleFormPedido[] detalles)
+        public async Task<IActionResult> PedidoCliente(Cliente cliente, Pedido pedido, DetallePedido[] detalles, string tablaHTML)
         {
-            try
-            {
-                formPedido.Fecha = DateTime.Now;
-                _context.Add(formPedido);
-                await _context.SaveChangesAsync();
+            Console.WriteLine(tablaHTML);
+            // Validar los modelos y agregar errores al ModelState
+            ModelState.Clear();
+            TryValidateModel(cliente);
 
-                foreach (var detalle in detalles)
+            if (ModelState.IsValid)
+            {
+                // Comienza la transacción
+                using var transaction = await _context.Database.BeginTransactionAsync();
+
+                try
                 {
-                    detalle.IdFormPedido = formPedido.IdFormPedido;
-                    _context.Add(detalle);
+                    // Verificar si el cliente ya existe por su correo electrónico
+                    var existingCliente = await _context.Clientes.FirstOrDefaultAsync(c => c.CorreoCliente == cliente.CorreoCliente);
+
+                    if (existingCliente != null)
+                    {
+                        // Utilizar el cliente existente en lugar de crear uno nuevo
+                        cliente = existingCliente;
+                    }
+                    else
+                    {
+                        // Configurar el nuevo cliente como inactivo
+                        cliente.Activo = false;
+                        _context.Add(cliente);
+                        await _context.SaveChangesAsync();
+                    }
+
+                    // Asignar la propiedad de navegación IdClienteNavigation al pedido
+                    pedido.FechaGeneracionPedido = pedido.FechaEntrega = DateTime.Now;
+                    pedido.EstadoPedido = "Por revisar";
+                    pedido.IdClienteNavigation = cliente; // Asignación directa
+                    pedido.IdUsuario = 1;
+                    pedido.Activo = false;
+                    _context.Add(pedido);
+
+                    await _context.SaveChangesAsync();
+
+                    foreach (var detalle in detalles)
+                    {
+                        detalle.IdPedido = pedido.IdPedido;
+                        _context.Add(detalle);
+                    }
+
+                    await _context.SaveChangesAsync();
+
+                    if (pedido.IdClienteNavigation != null)
+                    {
+                        CorreoPedido(pedido, tablaHTML);
+                    }
+
+                    // Confirma la transacción
+                    await transaction.CommitAsync();
+
+                    ViewData["DoneMessage"] = "Pedido realizado exitosamente";
+
+                    return RedirectToAction(nameof(Index));
                 }
-
-                await _context.SaveChangesAsync();
-
-                EmailDTO email = new()
+                catch
                 {
-                    Para = formPedido.CorreoCliente,
-                    Asunto = "Pedido Realizado",
-                    Contenido = "Prueba de email"
-                };
+                    LoadData();
 
-                _emailService.SendEmail(email);
-
-                return RedirectToAction(nameof(Index));
+                    // Revierte la transacción si hay un error
+                    await transaction.RollbackAsync();
+                    ViewData["ErrorMessage"] = "Error";
+                }
             }
-            catch
+
+            else
             {
-                return View(formPedido);
+                LoadData();
+
+                Utilities.ModelValidations(ModelState, ViewData);
+                Console.WriteLine(ViewData["ErrorMessage"]);
             }
+
+            return View(pedido);
         }
 
         public IActionResult Privacy()
@@ -91,6 +140,34 @@ namespace MakiYumpuSAC.Controllers
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
             return RedirectToAction("IniciarSesion", "Inicio");
+        }
+
+        private void LoadData()
+        {
+            ViewData["Paises"] = Utilities.CountriesOptions();
+        }
+
+        private void CorreoPedido(Pedido pedido, string tablaHTML)
+        {
+            EmailDTO email = new()
+            {
+                Para = pedido.IdClienteNavigation.CorreoCliente,
+                Asunto = "Pedido Realizado",
+                Contenido = $@"
+                            <html>
+                                <head>
+                                    <link
+                                        href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css'
+                                        rel='stylesheet'>   
+                                </head>
+                                <body>
+                                    {tablaHTML}    
+                                </body>
+                            </html>                  
+                            "
+            };
+
+            _emailService.SendEmail(email);
         }
     }
 }

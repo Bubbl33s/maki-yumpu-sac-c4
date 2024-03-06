@@ -46,7 +46,6 @@ public partial class MakiYumpuSacContext : DbContext
     public virtual DbSet<Usuario> Usuarios { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseSqlServer("Name=ConnectionStrings:MakiYumpuDBConn");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -177,16 +176,10 @@ public partial class MakiYumpuSacContext : DbContext
 
             entity.Property(e => e.IdDetPedido).HasColumnName("id_det_pedido");
             entity.Property(e => e.CantidadPrenda).HasColumnName("cantidad_prenda");
-            entity.Property(e => e.IdFichaTecnica).HasColumnName("id_ficha_tecnica");
             entity.Property(e => e.IdPedido).HasColumnName("id_pedido");
             entity.Property(e => e.PrecioUnitario)
                 .HasColumnType("money")
                 .HasColumnName("precio_unitario");
-
-            entity.HasOne(d => d.IdFichaTecnicaNavigation).WithMany(p => p.DetallePedidos)
-                .HasForeignKey(d => d.IdFichaTecnica)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__DETALLE_P__id_fi__06CD04F7");
 
             entity.HasOne(d => d.IdPedidoNavigation).WithMany(p => p.DetallePedidos)
                 .HasForeignKey(d => d.IdPedido)
@@ -236,6 +229,11 @@ public partial class MakiYumpuSacContext : DbContext
                 .HasMaxLength(500)
                 .IsUnicode(false)
                 .HasColumnName("vaporizado_desc");
+            entity.Property(e => e.IdDetallePedido).HasColumnName("id_detalle_pedido");
+            entity.HasOne(d => d.IdDetallePedidoNavigation).WithMany(p => p.FichasTecnicas)
+                .HasForeignKey(d => d.IdDetallePedido)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_FICHA_TECNICA_DETALLE_PEDIDO");
         });
 
         modelBuilder.Entity<FormPedido>(entity =>
@@ -372,9 +370,11 @@ public partial class MakiYumpuSacContext : DbContext
             entity.ToTable("PEDIDO");
 
             entity.Property(e => e.IdPedido).HasColumnName("id_pedido");
-            entity.Property(e => e.EstadoPedidoId)
-                .HasDefaultValue(1)
-                .HasColumnName("estado_pedido_id");
+            entity.Property(e => e.EstadoPedido)
+                .HasColumnName("estado_pedido");
+            entity.Property(e => e.Activo)
+                .HasDefaultValue(false)
+                .HasColumnName("activo");
             entity.Property(e => e.FechaEntrega)
                 .HasColumnType("datetime")
                 .HasColumnName("fecha_entrega");

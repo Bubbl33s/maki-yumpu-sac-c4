@@ -6,6 +6,7 @@
     <title>@ViewData["Title"] - MakiYumpuSAC</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="~/MakiYumpuSAC.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     @RenderSection("Head", required: false)
     <link rel="stylesheet" href="~/css/layout_clientes.css" />
 </head>
@@ -83,6 +84,7 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
