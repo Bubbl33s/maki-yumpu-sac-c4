@@ -175,6 +175,12 @@ public partial class MakiYumpuSacContext : DbContext
             entity.ToTable("DETALLE_PEDIDO");
 
             entity.Property(e => e.IdDetPedido).HasColumnName("id_det_pedido");
+            entity.Property(e => e.DescPrenda)
+                .HasMaxLength(50)
+                .HasColumnName("desc_prenda");
+            entity.Property(e => e.DetallesPrenda)
+                .HasMaxLength(200)
+                .HasColumnName("detalles_prenda");
             entity.Property(e => e.CantidadPrenda).HasColumnName("cantidad_prenda");
             entity.Property(e => e.IdPedido).HasColumnName("id_pedido");
             entity.Property(e => e.PrecioUnitario)

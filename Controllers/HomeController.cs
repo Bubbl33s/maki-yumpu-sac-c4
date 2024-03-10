@@ -7,6 +7,7 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
 using MakiYumpuSAC.Services.Contract;
 using Microsoft.EntityFrameworkCore;
+using System.Text;
 
 namespace MakiYumpuSAC.Controllers
 {
@@ -43,9 +44,8 @@ namespace MakiYumpuSAC.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> PedidoCliente(Cliente cliente, Pedido pedido, DetallePedido[] detalles, string tablaHTML)
+        public async Task<IActionResult> PedidoCliente(Cliente cliente, Pedido pedido, DetallePedido[] detalles)
         {
-            Console.WriteLine(tablaHTML);
             // Validar los modelos y agregar errores al ModelState
             ModelState.Clear();
             TryValidateModel(cliente);
@@ -93,7 +93,7 @@ namespace MakiYumpuSAC.Controllers
 
                     if (pedido.IdClienteNavigation != null)
                     {
-                        CorreoPedido(pedido, tablaHTML);
+                        CorreoPedido(pedido);
                     }
 
                     // Confirma la transacción
@@ -147,24 +147,63 @@ namespace MakiYumpuSAC.Controllers
             ViewData["Paises"] = Utilities.CountriesOptions();
         }
 
-        private void CorreoPedido(Pedido pedido, string tablaHTML)
+        private void CorreoPedido(Pedido pedido)
         {
+            StringBuilder sb = new StringBuilder();
+
+            // Estilos CSS para la tabla
+            string tablaStyle = @"
+                                <style>
+                                    table {
+                                        border-collapse: collapse;
+                                        width: 100%;
+                                    }
+
+                                    th, td {
+                                        border: 1px solid #dddddd;
+                                        padding: 8px;
+                                    }
+
+                                    th {
+                                        background-color: #f2f2f2;
+                                    }
+                                </style>";
+
+            // Apertura del cuerpo del correo electrónico y la tabla
+            sb.Append("<html>");
+            sb.Append("<head>");
+            sb.Append(tablaStyle); // Agregar estilos CSS
+            sb.Append("</head>");
+            sb.Append("<body>");
+            sb.Append("<table>");
+
+            // Encabezados de la tabla
+            sb.Append("<tr>");
+            sb.Append("<th>Prenda</th>");
+            sb.Append("<th>Detalles</th>");
+            sb.Append("<th>Cantidad</th>");
+            sb.Append("</tr>");
+
+            // Detalles del pedido
+            foreach (var detalle in pedido.DetallePedidos)
+            {
+                sb.Append("<tr>");
+                sb.Append($"<td>{detalle.DescPrenda}</td>");
+                sb.Append($"<td>{detalle.DetallesPrenda}</td>");
+                sb.Append($"<td style='text-align: center;'>{detalle.CantidadPrenda}</td>");
+                sb.Append("</tr>");
+            }
+
+            // Cerrar la tabla y el cuerpo del correo electrónico
+            sb.Append("</table>");
+            sb.Append("</body>");
+            sb.Append("</html>");
+
             EmailDTO email = new()
             {
                 Para = pedido.IdClienteNavigation.CorreoCliente,
                 Asunto = "Pedido Realizado",
-                Contenido = $@"
-                            <html>
-                                <head>
-                                    <link
-                                        href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css'
-                                        rel='stylesheet'>   
-                                </head>
-                                <body>
-                                    {tablaHTML}    
-                                </body>
-                            </html>                  
-                            "
+                Contenido = sb.ToString()
             };
 
             _emailService.SendEmail(email);

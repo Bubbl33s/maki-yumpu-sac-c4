@@ -1,14 +1,18 @@
 ﻿@model IEnumerable<MakiYumpuSAC.Models.Pedido>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Pedidos";
 }
 
-<h1>Index</h1>
+<h4>Pedidos</h4>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<div class="d-flex justify-content-between align-items-center mb-2">
+    <a asp-action="Create">Nuevo Pedido</a>
+    <div class="d-flex justify-content-between align-items-center mb-2 gap-2">
+        <a class="btn btn-outline-secondary" asp-controller="Pedidos" asp-action="Solicitudes">Solicitudes</a>
+    </div>
+</div>
+
 <table class="table">
     <thead>
         <tr>

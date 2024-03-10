@@ -21,8 +21,25 @@ namespace MakiYumpuSAC.Controllers
         // GET: Pedidos
         public async Task<IActionResult> Index()
         {
-            var makiYumpuSacContext = _context.Pedidos.Include(p => p.IdClienteNavigation).Include(p => p.IdUsuarioNavigation);
-            return View(await makiYumpuSacContext.ToListAsync());
+            var makiYumpuSacContext = await _context.Pedidos
+                .Include(p => p.IdClienteNavigation)
+                .Include(p => p.IdUsuarioNavigation)
+                .ToListAsync();
+
+            return View(makiYumpuSacContext);
+        }
+
+        // GET: Pedidos
+        public async Task<IActionResult> Solicitudes()
+        {
+            var makiYumpuSacContext = await _context.Pedidos
+                .Include(p => p.IdClienteNavigation)
+                .Include(p => p.IdUsuarioNavigation)
+                .Include(p => p.DetallePedidos)
+                .Where(p => p.EstadoPedido == "Por revisar")
+                .ToListAsync();
+
+            return View(makiYumpuSacContext);
         }
 
         // GET: Pedidos/Details/5
@@ -36,6 +53,27 @@ namespace MakiYumpuSAC.Controllers
             var pedido = await _context.Pedidos
                 .Include(p => p.IdClienteNavigation)
                 .Include(p => p.IdUsuarioNavigation)
+                .FirstOrDefaultAsync(m => m.IdPedido == id);
+            if (pedido == null)
+            {
+                return NotFound();
+            }
+
+            return View(pedido);
+        }
+
+        // GET: Pedidos/Details/5
+        public async Task<IActionResult> Revisar(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var pedido = await _context.Pedidos
+                .Include(p => p.IdClienteNavigation)
+                .Include(p => p.IdUsuarioNavigation)
+                .Include(p => p.DetallePedidos)
                 .FirstOrDefaultAsync(m => m.IdPedido == id);
             if (pedido == null)
             {
