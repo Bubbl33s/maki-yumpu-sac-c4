@@ -1,0 +1,58 @@
+﻿@model IEnumerable<MakiYumpuSAC.Models.Pedido>
+
+@{
+    ViewData["Title"] = "Solicitudes de Pedidos";
+}
+
+<h4>Solicitudes de Pedidos</h4>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                ID
+            </th>
+            <th>
+                Fecha de Solicitud
+            </th>
+            <th>
+                Cliente
+            </th>
+            <th>
+                Estado
+            </th>
+            <th>
+                Detalles
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdPedido)
+            </td>
+            <td>
+                @{
+                    var fechaGeneracion = item.FechaGeneracionPedido;
+                    @fechaGeneracion.ToString("dd/MM/yyyy")
+                }
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdClienteNavigation.NombreCompletoCliente)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EstadoPedido)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DetallePedidos.Count)
+            </td>
+            <td>
+                <a asp-action="Revisar" asp-route-id="@item.IdPedido">Revisar</a>
+                <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.IdPedido">Rechazar</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

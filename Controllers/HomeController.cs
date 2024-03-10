@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
 using MakiYumpuSAC.Services.Contract;
+using Microsoft.EntityFrameworkCore;
+using System.Text;
 
 namespace MakiYumpuSAC.Controllers
 {
@@ -35,44 +37,91 @@ namespace MakiYumpuSAC.Controllers
 
         public IActionResult PedidoCliente()
         {
-            ViewData["Paises"] = Utilities.CountriesOptions();
+            LoadData();
 
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> PedidoCliente([Bind("IdFormPedido,NombreCompletoCliente,CorreoCliente,PaisCliente,Fecha")] FormPedido formPedido, DetalleFormPedido[] detalles)
+        public async Task<IActionResult> PedidoCliente(Cliente cliente, Pedido pedido, DetallePedido[] detalles)
         {
-            try
-            {
-                formPedido.Fecha = DateTime.Now;
-                _context.Add(formPedido);
-                await _context.SaveChangesAsync();
+            // Validar los modelos y agregar errores al ModelState
+            ModelState.Clear();
+            TryValidateModel(cliente);
 
-                foreach (var detalle in detalles)
+            if (ModelState.IsValid)
+            {
+                // Comienza la transacción
+                using var transaction = await _context.Database.BeginTransactionAsync();
+
+                try
                 {
-                    detalle.IdFormPedido = formPedido.IdFormPedido;
-                    _context.Add(detalle);
+                    // Verificar si el cliente ya existe por su correo electrónico
+                    var existingCliente = await _context.Clientes.FirstOrDefaultAsync(c => c.CorreoCliente == cliente.CorreoCliente);
+
+                    if (existingCliente != null)
+                    {
+                        // Utilizar el cliente existente en lugar de crear uno nuevo
+                        cliente = existingCliente;
+                    }
+                    else
+                    {
+                        // Configurar el nuevo cliente como inactivo
+                        cliente.Activo = false;
+                        _context.Add(cliente);
+                        await _context.SaveChangesAsync();
+                    }
+
+                    // Asignar la propiedad de navegación IdClienteNavigation al pedido
+                    pedido.FechaGeneracionPedido = pedido.FechaEntrega = DateTime.Now;
+                    pedido.EstadoPedido = "Por revisar";
+                    pedido.IdClienteNavigation = cliente; // Asignación directa
+                    pedido.IdUsuario = 1;
+                    pedido.Activo = false;
+                    _context.Add(pedido);
+
+                    await _context.SaveChangesAsync();
+
+                    foreach (var detalle in detalles)
+                    {
+                        detalle.IdPedido = pedido.IdPedido;
+                        _context.Add(detalle);
+                    }
+
+                    await _context.SaveChangesAsync();
+
+                    if (pedido.IdClienteNavigation != null)
+                    {
+                        CorreoPedido(pedido);
+                    }
+
+                    // Confirma la transacción
+                    await transaction.CommitAsync();
+
+                    ViewData["DoneMessage"] = "Pedido realizado exitosamente";
+
+                    return RedirectToAction(nameof(Index));
                 }
-
-                await _context.SaveChangesAsync();
-
-                EmailDTO email = new()
+                catch
                 {
-                    Para = formPedido.CorreoCliente,
-                    Asunto = "Pedido Realizado",
-                    Contenido = "Prueba de email"
-                };
+                    LoadData();
 
-                _emailService.SendEmail(email);
-
-                return RedirectToAction(nameof(Index));
+                    // Revierte la transacción si hay un error
+                    await transaction.RollbackAsync();
+                    ViewData["ErrorMessage"] = "Error";
+                }
             }
-            catch
+
+            else
             {
-                return View(formPedido);
+                LoadData();
+
+                Utilities.ModelValidations(ModelState, ViewData);
+                Console.WriteLine(ViewData["ErrorMessage"]);
             }
+
+            return View(pedido);
         }
 
         public IActionResult Privacy()
@@ -91,6 +140,73 @@ namespace MakiYumpuSAC.Controllers
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
             return RedirectToAction("IniciarSesion", "Inicio");
+        }
+
+        private void LoadData()
+        {
+            ViewData["Paises"] = Utilities.CountriesOptions();
+        }
+
+        private void CorreoPedido(Pedido pedido)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            // Estilos CSS para la tabla
+            string tablaStyle = @"
+                                <style>
+                                    table {
+                                        border-collapse: collapse;
+                                        width: 100%;
+                                    }
+
+                                    th, td {
+                                        border: 1px solid #dddddd;
+                                        padding: 8px;
+                                    }
+
+                                    th {
+                                        background-color: #f2f2f2;
+                                    }
+                                </style>";
+
+            // Apertura del cuerpo del correo electrónico y la tabla
+            sb.Append("<html>");
+            sb.Append("<head>");
+            sb.Append(tablaStyle); // Agregar estilos CSS
+            sb.Append("</head>");
+            sb.Append("<body>");
+            sb.Append("<table>");
+
+            // Encabezados de la tabla
+            sb.Append("<tr>");
+            sb.Append("<th>Prenda</th>");
+            sb.Append("<th>Detalles</th>");
+            sb.Append("<th>Cantidad</th>");
+            sb.Append("</tr>");
+
+            // Detalles del pedido
+            foreach (var detalle in pedido.DetallePedidos)
+            {
+                sb.Append("<tr>");
+                sb.Append($"<td>{detalle.DescPrenda}</td>");
+                sb.Append($"<td>{detalle.DetallesPrenda}</td>");
+                sb.Append($"<td style='text-align: center;'>{detalle.CantidadPrenda}</td>");
+                sb.Append("</tr>");
+            }
+
+            // Cerrar la tabla y el cuerpo del correo electrónico
+            sb.Append("</table>");
+            sb.Append("</body>");
+            sb.Append("</html>");
+
+            EmailDTO email = new()
+            {
+                Para = pedido.IdClienteNavigation.CorreoCliente,
+                Asunto = "Pedido Realizado",
+                Contenido = sb.ToString()
+            };
+
+            _emailService.SendEmail(email);
         }
     }
 }

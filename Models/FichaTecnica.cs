@@ -31,9 +31,11 @@ public partial class FichaTecnica
     [DefaultValue(true)]
     public bool Activo { get; set; }
 
+    public int IdDetallePedido { get; set; }
+
     public virtual ICollection<DetalleFt> DetalleFts { get; set; } = new List<DetalleFt>();
 
-    public virtual ICollection<DetallePedido> DetallePedidos { get; set; } = new List<DetallePedido>();
-
     public virtual ICollection<ImgFichaTecnica> ImgFichaTecnicas { get; set; } = new List<ImgFichaTecnica>();
+
+    public virtual DetallePedido IdDetallePedidoNavigation { get; set; } = null!;
 }

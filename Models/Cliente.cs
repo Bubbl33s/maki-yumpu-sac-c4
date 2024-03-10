@@ -9,11 +9,14 @@ public partial class Cliente
 {
     public int IdCliente { get; set; }
 
-    public string NombreCompletoCliente { get; set; } = null!;
+    [Required(ErrorMessage = "Ingrese su nombre")]
+    public string? NombreCompletoCliente { get; set; }
 
-    [EmailAddress(ErrorMessage = "Ingrese un correo válido")]
+    [Required(ErrorMessage = "Ingrese su correo")]
+    [EmailAddress(ErrorMessage = "Correo inválido")]
     public string? CorreoCliente { get; set; }
 
+    [Required(ErrorMessage = "Seleccione su país")]
     public string? PaisCliente { get; set; }
 
     [DefaultValue(true)]

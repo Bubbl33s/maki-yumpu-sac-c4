@@ -1,0 +1,87 @@
+﻿@model MakiYumpuSAC.Models.Pedido
+
+@{
+    ViewData["Title"] = "Revisiar Solicitud";
+}
+
+<h4>Revisar Solicitud</h4>
+
+<div>
+    <h4>Pedido</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            Fecha de Solicitud
+        </dt>
+        <dd class = "col-sm-10">
+            @{
+                var fechaGeneracion = Model.FechaGeneracionPedido;
+                @fechaGeneracion.ToString("dd/MM/yyyy")
+            }
+        </dd>
+        <dt class = "col-sm-2">
+            Entrega estimada
+        </dt>
+        <dd class = "col-sm-10">
+            @{
+                var fechaEntrega = Model.FechaGeneracionPedido;
+                @fechaEntrega.ToString("dd/MM/yyyy")
+            }
+        </dd>
+        <dt class = "col-sm-2">
+            Estado
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.EstadoPedido)
+        </dd>
+        <dt class = "col-sm-2">
+            Cliente
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IdClienteNavigation.NombreCompletoCliente)
+        </dd>
+        <dt class="col-sm-2">
+            Correo
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.IdClienteNavigation.CorreoCliente)
+        </dd>
+    </dl>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Descripción
+            </th>
+            <th>
+                Detalles
+            </th>
+            <th>
+                Cantidad
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.DetallePedidos)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DescPrenda)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DetallesPrenda)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CantidadPrenda)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.IdPedido">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
