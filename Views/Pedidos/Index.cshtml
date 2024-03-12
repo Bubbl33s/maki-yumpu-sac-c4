@@ -38,10 +38,16 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.FechaGeneracionPedido)
+                @{
+                    var fechaGeneracion = item.FechaGeneracionPedido;
+                    @fechaGeneracion.ToString("dd/MM/yyyy")
+                }
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.FechaEntrega)
+                @{
+                    var fechaEntrega = item.FechaEntrega;
+                    @fechaEntrega.ToString("dd/MM/yyyy")
+                }
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.EstadoPedido)
@@ -50,7 +56,7 @@
                 @Html.DisplayFor(modelItem => item.IdClienteNavigation.IdCliente)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.IdUsuarioNavigation.ApPatUsuario)
+                @Html.DisplayFor(modelItem => item.IdUsuarioNavigation.IdUsuario)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.IdPedido">Edit</a> |

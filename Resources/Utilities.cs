@@ -127,6 +127,21 @@ namespace MakiYumpuSAC.Resources
             return new SelectList(paises);
         }
 
+        public static SelectList EstadoPedidos()
+        {
+            var estados = new List<string>()
+            {
+                "Por revisar",
+                "Pre-aceptado",
+                "En revisión",
+                "Aceptado",
+                "En proceso",
+                "Finalizado"
+            };
+
+            return new SelectList(estados);
+        }
+
         public static bool UniqueValidation(DbUpdateException ex, string indexName)
         {
             var sqlException = ex.InnerException as SqlException;
@@ -140,11 +155,9 @@ namespace MakiYumpuSAC.Resources
             foreach (var key in modelState.Keys)
             {
                 var error = modelState[key].Errors.FirstOrDefault();
-                if (error != null)
-                {
-                    viewData["ErrorMessage"] = $"{key} {error.ErrorMessage}";
-                    return;
-                }
+                if (error == null) continue;
+                viewData["ErrorMessage"] = $"{key} {error.ErrorMessage}";
+                return;
             }
         }
     }

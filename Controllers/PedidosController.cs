@@ -29,7 +29,7 @@ namespace MakiYumpuSAC.Controllers
             return View(makiYumpuSacContext);
         }
 
-        // GET: Pedidos
+        // GET: Solicitudes
         public async Task<IActionResult> Solicitudes()
         {
             var makiYumpuSacContext = await _context.Pedidos
@@ -81,6 +81,60 @@ namespace MakiYumpuSAC.Controllers
             }
 
             return View(pedido);
+        }
+        
+        // POST: Solicitudes
+        [HttpPost, ActionName("AceptarSolicitud")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AceptarSolicitud(int id, Pedido pedido)
+        {
+            if (id != pedido.IdPedido)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    pedido.Activo = true;
+                    pedido.IdClienteNavigation.Activo = true;
+                    pedido.EstadoPedido = "Pre-aceptado";
+
+                    _context.Update(pedido);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!PedidoExists(pedido.IdPedido))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            return RedirectToAction("Revisar", id);
+        }
+        
+        // POST: RechazarSolicitud/id
+        [HttpPost, ActionName("RechazarSolicitud")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RechazarSolicitud(int id)
+        {
+            var pedido = await _context.Pedidos.FindAsync(id);
+            if (pedido != null)
+            {
+                _context.Pedidos.Remove(pedido);
+            }
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Pedidos/Create

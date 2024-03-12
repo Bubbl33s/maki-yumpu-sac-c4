@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using Microsoft.AspNetCore.Authorization;
 using MakiYumpuSAC.Services.Contract;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
@@ -93,7 +92,7 @@ namespace MakiYumpuSAC.Controllers
 
                     if (pedido.IdClienteNavigation != null)
                     {
-                        CorreoPedido(pedido);
+                        NotificarPedido(pedido);
                     }
 
                     // Confirma la transacción
@@ -147,7 +146,7 @@ namespace MakiYumpuSAC.Controllers
             ViewData["Paises"] = Utilities.CountriesOptions();
         }
 
-        private void CorreoPedido(Pedido pedido)
+        private void NotificarPedido(Pedido pedido)
         {
             StringBuilder sb = new StringBuilder();
 
