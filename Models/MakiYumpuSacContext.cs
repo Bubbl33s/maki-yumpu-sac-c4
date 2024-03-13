@@ -94,7 +94,10 @@ public partial class MakiYumpuSacContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("pais_cliente");
             entity.Property(e => e.Activo)
-                .HasDefaultValue(true);
+                .HasDefaultValue(false);
+            entity.Property(e => e.Revisado)
+                .HasColumnName("revisado")
+                .HasDefaultValue(false);
         });
 
         modelBuilder.Entity<DetalleFormPedido>(entity =>

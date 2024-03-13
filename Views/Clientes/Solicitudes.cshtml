@@ -6,13 +6,6 @@
 
 <h4>Clientes</h4>
 
-<div class="d-flex justify-content-between align-items-center mb-2">
-    <a asp-action="Create">Nuevo Cliente</a>
-    <div class="d-flex justify-content-between align-items-center mb-2 gap-2">
-        <a class="btn btn-outline-secondary" asp-action="Solicitudes">Solicitudes</a>
-    </div>
-</div>
-
 <table class="table">
     <thead>
         <tr>
@@ -24,9 +17,6 @@
             </th>
             <th>
                 País
-            </th>
-            <th>
-                Pedidos
             </th>
             <th></th>
         </tr>
@@ -44,12 +34,14 @@
                 @Html.DisplayFor(modelItem => item.PaisCliente)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Pedidos.Count)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.IdCliente">Editar</a>
-                <a asp-action="Details" asp-route-id="@item.IdCliente">Detalles</a>
-                <a asp-action="Delete" asp-route-id="@item.IdCliente">Eliminar</a>
+                <form asp-action="AceptarSolicitud" method="post">
+                    <input type="hidden" name="id" value=".@item.IdCliente" />
+                    <button class="btn btn-outline-primary" type="submit">Aceptar</button>
+                </form>
+                <form asp-action="RechazarSolicitud" method="post">
+                    <input type="hidden" name="id" value=".@item.IdCliente" />
+                    <button class="btn btn-outline-danger" type="submit">Rechazar</button>
+                </form>
             </td>
         </tr>
 }

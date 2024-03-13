@@ -41,9 +41,9 @@
     text-align: left;
     background-color: #fff;
     border-radius: 10px;
-    -webkit-box-shadow: 0px 0px 13px 4px rgba(0,0,0,0.26);
-    -moz-box-shadow: 0px 0px 13px 4px rgba(0,0,0,0.26);
-    box-shadow: 0px 0px 13px 4px rgba(0,0,0,0.26);
+    -webkit-box-shadow: 0 0 13px 4px rgba(0,0,0,0.26);
+    -moz-box-shadow: 0 0 13px 4px rgba(0,0,0,0.26);
+    box-shadow: 0 0 13px 4px rgba(0,0,0,0.26);
 }
 
 #pais-container {
@@ -172,7 +172,6 @@ textarea {
 
 .btn {
     width: 50%;
-    padding: 5.rem 1rem;
     background-color: #fff;
     color: black;
     font-weight: bold;

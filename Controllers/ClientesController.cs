@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Humanizer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MakiYumpuSAC.Models;
+using MakiYumpuSAC.Resources;
 using Microsoft.AspNetCore.Authorization;
 
 namespace MakiYumpuSAC.Controllers
@@ -23,7 +25,77 @@ namespace MakiYumpuSAC.Controllers
         // GET: Clientes
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Clientes.ToListAsync());
+            return View(await _context.Clientes
+                .Include(c => c.Pedidos)
+                .Where(c => c.Activo)
+                .ToListAsync());
+        }
+        
+        // GET: Solicitudes
+        public async Task<IActionResult> Solicitudes()
+        {
+            var solicitudes = await _context.Clientes
+                .Where(c => !c.Revisado)
+                .ToListAsync();
+
+            return View(solicitudes);
+        }
+        
+        // POST: Solicitudes
+        [HttpPost, ActionName("AceptarSolicitud")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AceptarSolicitud(int id)
+        {
+            var cliente = await _context.Clientes.FindAsync(id);
+
+            cliente.Revisado = true;
+            cliente.Activo = true;
+
+            return RedirectToAction(nameof(Solicitudes));
+        }
+        
+        // POST: Solicitudes
+        [HttpPost, ActionName("RechazarSolicitud")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RechazarSolicitud(int id)
+        {
+            var cliente = await _context.Clientes
+                .Include(c => c.Pedidos)
+                    .ThenInclude(p => p.DetallePedidos)
+                .FirstOrDefaultAsync(c => c.IdCliente == id);
+
+            if (cliente == null)
+            {
+                return NotFound();
+            }
+
+            await using var transaction = await _context.Database.BeginTransactionAsync();
+
+            try
+            {
+                foreach (var pedido in cliente.Pedidos)
+                {
+                    foreach (var detalle in pedido.DetallePedidos)
+                    {
+                        _context.DetallePedidos.Remove(detalle);
+                    }
+
+                    _context.Pedidos.Remove(pedido);
+                }
+
+                _context.Clientes.Remove(cliente);
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Solicitudes));
         }
 
         // GET: Clientes/Details/5
@@ -35,7 +107,10 @@ namespace MakiYumpuSAC.Controllers
             }
 
             var cliente = await _context.Clientes
+                .Include(c => c.Pedidos)
+                    .ThenInclude(p => p.DetallePedidos)
                 .FirstOrDefaultAsync(m => m.IdCliente == id);
+            
             if (cliente == null)
             {
                 return NotFound();
@@ -47,6 +122,8 @@ namespace MakiYumpuSAC.Controllers
         // GET: Clientes/Create
         public IActionResult Create()
         {
+            LoadData();
+            
             return View();
         }
 
@@ -59,11 +136,35 @@ namespace MakiYumpuSAC.Controllers
         {
             if (ModelState.IsValid)
             {
-                cliente.Activo = true;
-                _context.Add(cliente);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    cliente.Activo = true;
+                    cliente.Revisado = true;
+                    _context.Add(cliente);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateException ex)
+                {
+                    if (Utilities.UniqueValidation(ex, "IX_CLIENTE_correo_cliente"))
+                    {
+                        ViewData["ErrorMessage"] = "Correo ya registrado";
+                    }
+                    
+                    if (Utilities.UniqueValidation(ex, "IX_CLIENTE_nombre_completo_cliente"))
+                    {
+                        ViewData["ErrorMessage"] = "Nombre ya registrado";
+                    }
+                    
+                    LoadData();
+                }
             }
+            else
+            {
+                LoadData();
+                Utilities.ModelValidations(ModelState, ViewData);
+            }
+            
             return View(cliente);
         }
 
@@ -80,6 +181,8 @@ namespace MakiYumpuSAC.Controllers
             {
                 return NotFound();
             }
+            
+            LoadData();
             return View(cliente);
         }
 
@@ -102,20 +205,29 @@ namespace MakiYumpuSAC.Controllers
                     cliente.Activo = true;
                     _context.Update(cliente);
                     await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateException ex)
                 {
-                    if (!ClienteExists(cliente.IdCliente))
+                    if (Utilities.UniqueValidation(ex, "IX_CLIENTE_correo_cliente"))
                     {
-                        return NotFound();
+                        ViewData["ErrorMessage"] = "Correo ya registrado";
                     }
-                    else
+                    
+                    if (Utilities.UniqueValidation(ex, "IX_CLIENTE_nombre_completo_cliente"))
                     {
-                        throw;
+                        ViewData["ErrorMessage"] = "Nombre ya registrado";
                     }
+                    
+                    LoadData();
                 }
-                return RedirectToAction(nameof(Index));
             }
+            else
+            {
+                LoadData();
+                Utilities.ModelValidations(ModelState, ViewData);
+            }
+            
             return View(cliente);
         }
 
@@ -143,6 +255,7 @@ namespace MakiYumpuSAC.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var cliente = await _context.Clientes.FindAsync(id);
+            
             if (cliente != null)
             {
                 cliente.Activo = false;
@@ -155,6 +268,11 @@ namespace MakiYumpuSAC.Controllers
         private bool ClienteExists(int id)
         {
             return _context.Clientes.Any(e => e.IdCliente == id);
+        }
+        
+        private void LoadData()
+        {
+            ViewData["Paises"] = Utilities.CountriesOptions();
         }
     }
 }

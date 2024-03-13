@@ -50,7 +50,10 @@
             </td>
             <td>
                 <a asp-action="Revisar" asp-route-id="@item.IdPedido">Revisar</a>
-                <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.IdPedido">Rechazar</a>
+                <form asp-action="RechazarSolicitud" method="post">
+                    <input type="hidden" name="id" value=".@item.IdPedido" />
+                    <button class="btn btn-outline-danger" type="submit">Rechazar</button>
+                </form>
             </td>
         </tr>
 }

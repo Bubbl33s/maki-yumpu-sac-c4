@@ -43,33 +43,33 @@
 
 <table class="table">
     <thead>
-    <tr>
-        <th>
-            Descripción
-        </th>
-        <th>
-            Detalles
-        </th>
-        <th>
-            Cantidad
-        </th>
-    </tr>
+        <tr>
+            <th>
+                Descripción
+            </th>
+            <th>
+                Detalles
+            </th>
+            <th>
+                Cantidad
+            </th>
+        </tr>
     </thead>
     <tbody>
-    @foreach (var item in Model.DetallePedidos)
-    {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.DescPrenda)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DetallesPrenda)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CantidadPrenda)
-            </td>
-        </tr>
-    }
+        @foreach (var item in Model.DetallePedidos)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DescPrenda)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DetallesPrenda)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CantidadPrenda)
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
 

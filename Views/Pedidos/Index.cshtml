@@ -15,55 +15,61 @@
 
 <table class="table">
     <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.FechaGeneracionPedido)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FechaEntrega)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EstadoPedido)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IdClienteNavigation)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IdUsuarioNavigation)
-            </th>
-            <th></th>
-        </tr>
+    <tr>
+        <th>
+            ID
+        </th>
+        <th>
+            Fecha de Generación
+        </th>
+        <th>
+            Fecha Estimada
+        </th>
+        <th>
+            Estado
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.IdClienteNavigation)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.IdUsuarioNavigation)
+        </th>
+        <th></th>
+    </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
-        <tr>
-            <td>
-                @{
-                    var fechaGeneracion = item.FechaGeneracionPedido;
-                    @fechaGeneracion.ToString("dd/MM/yyyy")
-                }
-            </td>
-            <td>
-                @{
-                    var fechaEntrega = item.FechaEntrega;
-                    @fechaEntrega.ToString("dd/MM/yyyy")
-                }
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EstadoPedido)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdClienteNavigation.IdCliente)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdUsuarioNavigation.IdUsuario)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.IdPedido">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.IdPedido">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.IdPedido">Delete</a>
-            </td>
-        </tr>
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.IdPedido)
+        </td>
+        <td>
+            @{
+                var fechaGeneracion = item.FechaGeneracionPedido;
+                @fechaGeneracion.ToString("dd/MM/yyyy")
+            }
+        </td>
+        <td>
+            @{
+                var fechaEntrega = item.FechaEntrega;
+                @fechaEntrega.ToString("dd/MM/yyyy")
+            }
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.EstadoPedido)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.IdClienteNavigation.IdCliente)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.IdUsuarioNavigation.IdUsuario)
+        </td>
+        <td>
+            <a asp-action="Edit" asp-route-id="@item.IdPedido">Edit</a> |
+            <a asp-action="Details" asp-route-id="@item.IdPedido">Details</a> |
+            <a asp-action="Delete" asp-route-id="@item.IdPedido">Delete</a>
+        </td>
+    </tr>
 }
     </tbody>
 </table>

@@ -1,36 +1,90 @@
 ﻿@model MakiYumpuSAC.Models.Cliente
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalles Cliente";
 }
 
-<h1>Details</h1>
+<h4>Detalles Cliente</h4>
 
 <div>
-    <h4>Cliente</h4>
-    <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NombreCompletoCliente)
+            Nombre Completo
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.NombreCompletoCliente)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CorreoCliente)
+            Correo
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.CorreoCliente)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PaisCliente)
+            País
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.PaisCliente)
         </dd>
     </dl>
 </div>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>
+            ID
+        </th>
+        <th>
+            Fecha de Generación
+        </th>
+        <th>
+            Fecha Estimada
+        </th>
+        <th>
+            Estado
+        </th>
+        <th>
+            Detalles
+        </th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model.Pedidos) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdPedido)
+            </td>
+            <td>
+                @{
+                    var fechaGeneracion = item.FechaGeneracionPedido;
+                    @fechaGeneracion.ToString("dd/MM/yyyy")
+                }
+            </td>
+            <td>
+                @{
+                    var fechaEntrega = item.FechaEntrega;
+                    @fechaEntrega.ToString("dd/MM/yyyy")
+                }
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EstadoPedido)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DetallePedidos.Count)
+            </td>
+            <td>
+                <a asp-controller="Pedidos" asp-action="Edit" asp-route-id="@item.IdPedido">Editar</a>
+                <a asp-controller="Pedidos" asp-action="Details" asp-route-id="@item.IdPedido">Detalles</a>
+                <a asp-controller="Pedidos" asp-action="Delete" asp-route-id="@item.IdPedido">Eliminar</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.IdCliente">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model?.IdCliente">Editar</a>
+    <a asp-action="Index">Volver</a>
 </div>
