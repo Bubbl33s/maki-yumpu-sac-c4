@@ -4,44 +4,75 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
-
 <div>
     <h4>Pedido</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FechaGeneracionPedido)
+            Fecha de Solicitud
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FechaGeneracionPedido)
+            @{
+                var fechaGeneracion = Model.FechaGeneracionPedido;
+                @fechaGeneracion.ToString("dd/MM/yyyy")
+            }
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FechaEntrega)
+            Entrega estimada
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FechaEntrega)
+            @{
+                var fechaEntrega = Model.FechaEntrega;
+                @fechaEntrega.ToString("dd/MM/yyyy")
+            }
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.EstadoPedido)
+            Estado
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.EstadoPedido)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IdClienteNavigation)
+            Cliente
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdClienteNavigation.IdCliente)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IdUsuarioNavigation)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdUsuarioNavigation.ApPatUsuario)
+            @Html.DisplayFor(model => model.IdClienteNavigation.NombreCompletoCliente)
         </dd>
     </dl>
 </div>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>
+            Descripción
+        </th>
+        <th>
+            Detalles
+        </th>
+        <th>
+            Cantidad
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model.DetallePedidos)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.DescPrenda)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DetallesPrenda)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CantidadPrenda)
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.IdPedido">Edit</a> |
     <a asp-action="Index">Back to List</a>

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MakiYumpuSAC.Models;
+using MakiYumpuSAC.Resources;
 
 namespace MakiYumpuSAC.Controllers
 {
@@ -53,7 +54,9 @@ namespace MakiYumpuSAC.Controllers
             var pedido = await _context.Pedidos
                 .Include(p => p.IdClienteNavigation)
                 .Include(p => p.IdUsuarioNavigation)
+                .Include(p => p.DetallePedidos)
                 .FirstOrDefaultAsync(m => m.IdPedido == id);
+            
             if (pedido == null)
             {
                 return NotFound();
@@ -75,6 +78,7 @@ namespace MakiYumpuSAC.Controllers
                 .Include(p => p.IdUsuarioNavigation)
                 .Include(p => p.DetallePedidos)
                 .FirstOrDefaultAsync(m => m.IdPedido == id);
+            
             if (pedido == null)
             {
                 return NotFound();
@@ -86,12 +90,13 @@ namespace MakiYumpuSAC.Controllers
         // POST: Solicitudes
         [HttpPost, ActionName("AceptarSolicitud")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AceptarSolicitud(int id, Pedido pedido)
+        public async Task<IActionResult> AceptarSolicitud(int id)
         {
-            if (id != pedido.IdPedido)
-            {
-                return NotFound();
-            }
+            var pedido = await _context.Pedidos
+                .Include(p => p.IdClienteNavigation)
+                .Include(p => p.IdUsuarioNavigation)
+                .Include(p => p.DetallePedidos)
+                .FirstOrDefaultAsync(m => m.IdPedido == id);
 
             if (ModelState.IsValid)
             {
@@ -116,32 +121,65 @@ namespace MakiYumpuSAC.Controllers
                     }
                 }
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Solicitudes));
             }
 
             return RedirectToAction("Revisar", id);
         }
         
-        // POST: RechazarSolicitud/id
+        // POST: RechazarSolicitud
         [HttpPost, ActionName("RechazarSolicitud")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RechazarSolicitud(int id)
         {
-            var pedido = await _context.Pedidos.FindAsync(id);
-            if (pedido != null)
+            var pedido = await _context.Pedidos
+                .Include(p => p.IdClienteNavigation)
+                .Include(p => p.IdUsuarioNavigation)
+                .Include(p => p.DetallePedidos)
+                .FirstOrDefaultAsync(m => m.IdPedido == id);
+
+            await using var transaction = await _context.Database.BeginTransactionAsync();
+
+            try
             {
-                _context.Pedidos.Remove(pedido);
+                if (pedido != null)
+                {
+                    foreach (var detalle in pedido.DetallePedidos)
+                    {
+                        _context.DetallePedidos.Remove(detalle);
+                    }
+
+                    await _context.SaveChangesAsync();
+
+                    _context.Pedidos.Remove(pedido);
+                    await _context.SaveChangesAsync();
+                    
+                    /*
+                    if (!pedido.IdClienteNavigation.Activo)
+                    {
+                        var cliente = await _context.Clientes.FindAsync(pedido.IdCliente);
+                        _context.Clientes.Remove(cliente);
+                        await _context.SaveChangesAsync();
+                    }*/
+
+                    await transaction.CommitAsync();
+                }
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            
+            return RedirectToAction(nameof(Solicitudes));
         }
 
         // GET: Pedidos/Create
         public IActionResult Create()
         {
-            ViewData["IdCliente"] = new SelectList(_context.Clientes, "IdCliente", "IdCliente");
-            ViewData["IdUsuario"] = new SelectList(_context.Usuarios, "IdUsuario", "ApPatUsuario");
+            LoadData();
+            
             return View();
         }
 
@@ -150,16 +188,55 @@ namespace MakiYumpuSAC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdPedido,FechaGeneracionPedido,FechaEntrega,IdCliente,IdUsuario,EstadoPedidoId")] Pedido pedido)
+        public async Task<IActionResult> Create(Pedido pedido, DetallePedido[] detalles)
         {
+            pedido.IdClienteNavigation = await _context.Clientes.FindAsync(pedido.IdCliente);
+            pedido.IdUsuario = 1;
+            pedido.IdUsuarioNavigation = await _context.Usuarios.FindAsync(pedido.IdUsuario);
+            pedido.EstadoPedido = "En revisión";
+            
+            ModelState.Clear();
+            TryValidateModel(pedido);
+            
             if (ModelState.IsValid)
             {
-                _context.Add(pedido);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                using var transaction = await _context.Database.BeginTransactionAsync();
+
+                try
+                {
+                    pedido.FechaGeneracionPedido = DateTime.Now;
+                    pedido.Activo = true;
+                    _context.Add(pedido);
+
+                    await _context.SaveChangesAsync();
+
+                    foreach (var detalle in detalles)
+                    {
+                        detalle.IdPedido = pedido.IdPedido;
+                        _context.Add(detalle);
+                    }
+
+                    await _context.SaveChangesAsync();
+                    await transaction.CommitAsync();
+
+                    ViewData["DoneMessage"] = "Pedido realizado exitosamente";
+
+                    return RedirectToAction(nameof(Index));
+                }
+                catch
+                {
+                    LoadData();
+                    await transaction.RollbackAsync();
+                    ViewData["ErrorMessage"] = "Error";
+                }
             }
-            ViewData["IdCliente"] = new SelectList(_context.Clientes, "IdCliente", "IdCliente", pedido.IdCliente);
-            ViewData["IdUsuario"] = new SelectList(_context.Usuarios, "IdUsuario", "ApPatUsuario", pedido.IdUsuario);
+
+            else
+            {
+                LoadData();
+                Utilities.ModelValidations(ModelState, ViewData);
+            }
+            
             return View(pedido);
         }
 
@@ -176,8 +253,9 @@ namespace MakiYumpuSAC.Controllers
             {
                 return NotFound();
             }
-            ViewData["IdCliente"] = new SelectList(_context.Clientes, "IdCliente", "IdCliente", pedido.IdCliente);
-            ViewData["IdUsuario"] = new SelectList(_context.Usuarios, "IdUsuario", "ApPatUsuario", pedido.IdUsuario);
+            
+            LoadData();
+            
             return View(pedido);
         }
 
@@ -213,8 +291,9 @@ namespace MakiYumpuSAC.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdCliente"] = new SelectList(_context.Clientes, "IdCliente", "IdCliente", pedido.IdCliente);
-            ViewData["IdUsuario"] = new SelectList(_context.Usuarios, "IdUsuario", "ApPatUsuario", pedido.IdUsuario);
+            
+            LoadData();
+            
             return View(pedido);
         }
 
@@ -256,6 +335,23 @@ namespace MakiYumpuSAC.Controllers
         private bool PedidoExists(int id)
         {
             return _context.Pedidos.Any(e => e.IdPedido == id);
+        }
+
+        private void LoadData()
+        {
+            /*
+            var clientes = _context.Clientes
+                .Where(c => c.Activo)
+                .ToList();
+
+            var clientesItems = clientes.Select(c => new SelectListItem
+            {
+                Value = $"{c.IdCliente}",
+                Text = $"{c.NombreCompletoCliente}"
+            });*/
+            
+            ViewData["IdCliente"] = new SelectList(_context.Clientes, "IdCliente", "NombreCompletoCliente");
+            ViewData["IdUsuario"] = new SelectList(_context.Usuarios, "IdUsuario", "ApPatUsuario");
         }
     }
 }

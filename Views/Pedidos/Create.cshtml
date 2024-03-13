@@ -1,43 +1,153 @@
-﻿@model MakiYumpuSAC.Models.Pedido
-
-@{
+﻿@{
     ViewData["Title"] = "Create";
 }
 
 <h1>Create</h1>
 
-<h4>Pedido</h4>
+<h4>FormPedido</h4>
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+<form asp-action="Create">
+    <div class="card">
+        <div class="card-header">
+            Pedidos
+        </div>
+        <div class="card-body">
             <div class="form-group">
-                <label asp-for="FechaGeneracionPedido" class="control-label"></label>
-                <input asp-for="FechaGeneracionPedido" class="form-control" />
-                <span asp-validation-for="FechaGeneracionPedido" class="text-danger"></span>
+                <label name="pedido.IdCliente" class="control-label">Cliente</label>
+                <select name="pedido.IdCliente" class="form-control" asp-items="ViewBag.IdCliente"></select>
             </div>
             <div class="form-group">
-                <label asp-for="FechaEntrega" class="control-label"></label>
-                <input asp-for="FechaEntrega" class="form-control" />
-                <span asp-validation-for="FechaEntrega" class="text-danger"></span>
+                <label name="pedido.FechaEntrega" class="control-label">Fecha estimada</label>
+                <input name="pedido.FechaEntrega" class="form-control" type="date" />
             </div>
-            <div class="form-group">
-                <label asp-for="IdCliente" class="control-label"></label>
-                <select asp-for="IdCliente" class ="form-control" asp-items="ViewBag.IdCliente"></select>
+            <hr />
+            <div class="row align-items-end">
+                <div class="col-sm-3">
+                    <label class="form-label">Prenda</label>
+                    <input class="form-control form-control-sm" type="text" id="desc-prenda" />
+                </div>
+                <div class="col-sm-3">
+                    <label class="form-label">Descripción detallada</label>
+                    <input class="form-control form-control-sm" type="text" id="desc-detallada-prenda" />
+                </div>
+                <div class="col-sm-3">
+                    <label class="form-label">Cantidad</label>
+                    <input class="form-control form-control-sm" type="number" step="1" id="cantidad-prenda" />
+                </div>
+                <div class="col-sm-3">
+                    <button class="btn btn-success btn-sm" id="btn-agregar">Agregar</button>
+                    <button type="submit" class="btn btn-primary btn-sm" id="btn-finalizar">Finalizar</button>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="IdUsuario" class="control-label"></label>
-                <select asp-for="IdUsuario" class ="form-control" asp-items="ViewBag.IdUsuario"></select>
+            <hr />
+            <div class="row">
+                <div class="col-sm-12">
+                    <table class="table table-bordered table-sm" id="tabla-pedido">
+                        <thead>
+                            <tr class="table-dark">
+                                <th>Prenda</th>
+                                <th>Descripción detallada</th>
+                                <th>Cantidad</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
-</div>
+</form>
 
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
+
+
+@section Scripts {
+    <script type="module">
+        import toastMessage from '/js/toastMessage.js';
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const errorMessage = "@ViewBag.ErrorMessage";
+
+            errorMessage && toastMessage(errorMessage, "error");
+        });
+        
+        $(document).ready(function () {
+            let detalleCount = 0;
+
+            $("#btn-agregar").on("click", (e) => {
+                e.preventDefault();
+                
+                if (validarCampos()) {
+                    $("#tabla-pedido > tbody").append(
+                        $("<tr>").append(
+                            $("<td>").append(
+                                $("<input>")
+                                .attr("type", "text")
+                                .attr("name", "detalles[" + detalleCount + "].DescPrenda")
+                                .addClass("form-control")
+                                .val($("#desc-prenda")
+                                .val())
+                            ),
+                            $("<td>").append(
+                                $("<input>")
+                                    .attr("type", "text")
+                                    .attr("name", "detalles[" + detalleCount + "].DetallesPrenda")
+                                    .addClass("form-control")
+                                    .val($("#desc-detallada-prenda")
+                                    .val())
+                            ),
+                            $("<td>").append(
+                                $("<input>")
+                                    .attr("type", "number")
+                                    .attr("name", "detalles[" + detalleCount + "].CantidadPrenda")
+                                    .addClass("form-control")
+                                    .val($("#cantidad-prenda")
+                                    .val())
+                            )
+                        )
+                    );
+    
+                    $("#desc-prenda").val("");
+                    $("#desc-detallada-prenda").val("");
+                    $("#cantidad-prenda").val("");
+                    $("#desc-prenda").focus();
+    
+                    detalleCount++;
+                }
+            });
+            
+            const validarCampos = () => {
+                const campos = [
+                    {
+                        id: "#desc-prenda",
+                        mensaje: "Ingrese la prenda"
+                    },
+                    {
+                        id: "#desc-detallada-prenda",
+                        mensaje: "Ingrese los detalles de la prenda"
+                    },
+                    {
+                        id: "#cantidad-prenda",
+                        mensaje: "Ingrese la cantidad"
+                    }
+                ];
+            
+                for (const campo of campos) {
+                    const valor = $(campo.id).val().trim();
+            
+                    if (valor === "") {
+                        toastMessage(campo.mensaje, "error");
+                        return false;
+                    }
+                }
+            
+                return true;
+            };
+        });
+    </script>
+}
 

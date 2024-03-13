@@ -88,7 +88,15 @@
 </table>
 
 <div>
-    <a asp-action="AceptarSolicitud" asp-route-id="@Model?.IdPedido">Aceptar</a>
-    <a asp-action="RechazarSolicitud" asp-route-id="@Model?.IdPedido">Rechazar</a>
-    <a asp-action="Index">Back to List</a>
+    <div>
+        <form asp-action="AceptarSolicitud" method="post">
+            <input type="hidden" name="id" value="@Model.IdPedido" />
+            <button type="submit">Aceptar</button>
+        </form>
+        <form asp-action="RechazarSolicitud" method="post">
+            <input type="hidden" name="id" value="@Model.IdPedido" />
+            <button type="submit">Rechazar</button>
+        </form>
+        <a asp-action="Index">Back to List</a>
+    </div>
 </div>

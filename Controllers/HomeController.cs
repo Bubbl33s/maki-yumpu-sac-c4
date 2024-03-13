@@ -106,7 +106,6 @@ namespace MakiYumpuSAC.Controllers
                 {
                     LoadData();
 
-                    // Revierte la transacción si hay un error
                     await transaction.RollbackAsync();
                     ViewData["ErrorMessage"] = "Error";
                 }
@@ -148,25 +147,26 @@ namespace MakiYumpuSAC.Controllers
 
         private void NotificarPedido(Pedido pedido)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
             // Estilos CSS para la tabla
-            string tablaStyle = @"
-                                <style>
-                                    table {
-                                        border-collapse: collapse;
-                                        width: 100%;
-                                    }
-
-                                    th, td {
-                                        border: 1px solid #dddddd;
-                                        padding: 8px;
-                                    }
-
-                                    th {
-                                        background-color: #f2f2f2;
-                                    }
-                                </style>";
+            const string tablaStyle = """
+                                      <style>
+                                          table {
+                                              border-collapse: collapse;
+                                              width: 100%;
+                                          }
+      
+                                          th, td {
+                                              border: 1px solid #dddddd;
+                                              padding: 8px;
+                                          }
+      
+                                          th {
+                                              background-color: #f2f2f2;
+                                          }
+                                      </style>
+                                      """;
 
             // Apertura del cuerpo del correo electrónico y la tabla
             sb.Append("<html>");
