@@ -13,12 +13,10 @@ namespace MakiYumpuSAC.Controllers
     public class PedidosController : Controller
     {
         private readonly MakiYumpuSacContext _context;
-        private readonly ClientesController _clientes;
 
-        public PedidosController(MakiYumpuSacContext context, ClientesController clientes)
+        public PedidosController(MakiYumpuSacContext context)
         {
             _context = context;
-            _clientes = clientes;
         }
 
         // GET: Pedidos
@@ -104,7 +102,7 @@ namespace MakiYumpuSAC.Controllers
             {
                 try
                 {
-                    await _clientes.AceptarSolicitud(pedido.IdCliente); 
+                    _context.Clientes.Add(pedido.IdClienteNavigation);
                     
                     pedido.Activo = true;
                     pedido.IdClienteNavigation.Activo = true;
@@ -223,6 +221,7 @@ namespace MakiYumpuSAC.Controllers
                 {
                     LoadData();
                     await transaction.RollbackAsync();
+                    
                     ViewData["ErrorMessage"] = "Error";
                 }
             }

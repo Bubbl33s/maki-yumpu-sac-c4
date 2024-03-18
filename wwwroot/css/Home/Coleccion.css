@@ -1,0 +1,161 @@
+/* Prenda */
+
+.producto{
+    padding-top: 18vh;
+    padding-bottom: 15vh;
+}
+
+.img-producto{
+    margin-left: 50vh;
+    max-width: 350px;
+}
+
+.contenedor-info{
+    width: auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.info-producto {
+    margin: auto 0;
+    max-width: 85vh;
+    flex: 1;
+}
+
+.contenedor-img{
+    max-width: 100vh;
+    flex: 1;
+}
+
+.nombre-producto{
+    font-size: 3.5rem;
+    padding-bottom: 24px;
+}
+
+.detalle{
+    display: block;
+    margin-bottom: 15px;
+    font-size: 1.5rem;
+}
+
+/* Material */
+
+.material{
+    padding-bottom: 15vh;
+}
+
+.info-material {
+    margin: auto 0;
+    max-width: 85vh;
+    flex: 1;
+}
+
+.nombre-material{
+    font-size: 3.5rem;
+    padding-bottom: 24px;
+}
+
+.material-info{
+    display: block;
+    margin-bottom: 15px;
+    font-size: 1.5rem;
+}
+
+/* Material Base */
+
+.material-base{
+    padding-bottom: 15vh;
+}
+
+.info-material {
+    margin: auto 0;
+    max-width: 85vh;
+    flex: 1;
+}
+
+.nombre-material{
+    font-size: 3.5rem;
+    padding-bottom: 24px;
+}
+
+.material-info{
+    display: block;
+    margin-bottom: 15px;
+    font-size: 1.5rem;
+}
+
+/* Media Query */
+
+@media screen and (max-width: 2080px) {
+    .img-producto{
+        margin-left: 35vh;
+    }
+
+    .info-producto {
+        padding-left: 10vh;
+    }
+
+    .info-material {
+        padding-left: 10vh;
+    }
+}
+
+@media screen and (max-width: 1220px) {
+    .img-producto{
+        margin-left: 25vh;
+    }
+
+    .info-producto {
+        padding-left: 5vh;
+    }
+
+    .info-material {
+        padding-left: 5vh;
+    }
+}
+
+@media screen and (max-width: 980px) {
+    .img-producto{
+        margin-left: 8vh;
+    }
+
+    .info-producto {
+        padding-left: 5vh;
+    }
+
+    .info-material {
+        padding-left: 5vh;
+    }
+}
+
+@media screen and (max-width: 785px) {
+    .contenedor-info {
+        flex-direction: column;
+    }
+
+    .info-producto {
+        padding-top: 15px;
+        padding-left: 0;
+        margin: auto;
+        max-width: none;
+    }
+
+    .contenedor-img {
+        margin-left: auto;
+        margin-right: auto;
+        max-width: none;
+    }
+
+    .img-producto{
+        margin-left: 0;
+    }
+
+
+    .info-material {
+        padding-top: 15px;
+        padding-left: 0;
+        margin: auto;
+        max-width: none;
+    }
+}

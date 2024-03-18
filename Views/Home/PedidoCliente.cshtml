@@ -27,6 +27,10 @@
                     </div>
                 </div>
                 <div class="info-pedido">
+                    <label name="pedido.FechaEntrega" class="control-label">Fecha estimada</label>
+                    <input id="fecha-estimada" name="pedido.FechaEntrega" class="inputs" type="date" />
+                </div>
+                <div class="info-pedido">
                     <label>Prenda</label>
                     <input type="text" id="desc-prenda" placeholder="Ingrese la prenda" class="inputs" />
                 </div>
@@ -79,30 +83,100 @@
     <script>
         $(document).ready(() => {
             let detalleCount = 0;
+            
+            const today = new Date().toISOString().split('T')[0];
+                        
+            document.getElementById('fecha-estimada').min = today;
+            document.getElementById('fecha-estimada').value = today;
+            
+            $("#btn-finalizar").on("click", (e) => {
+                e.preventDefault();
+                
+                // Obtener la fecha estimada ingresada por el usuario
+                const fechaEstimada = new Date($("#fecha-estimada").val());
+
+                // Obtener el año actual más 10 años
+                const limiteAnio = new Date().getFullYear() + 10;
+                const fechaLimite = new Date(limiteAnio, 0, 1);
+
+                if (fechaEstimada >= fechaLimite) {
+                    toastMessage("La fecha estimada debe ser menor", "error");
+                    return;
+                }
+                
+                // Si la validación pasa, puedes proceder con el envío del formulario
+                $("form").submit();
+            });
 
             $("#btn-agregar").on("click", (e) => {
                 e.preventDefault();
-                $("#tabla-pedido > tbody").append(
-                    $("<tr>").append(
-                        $("<td>").append(
-                            $("<input>").attr("type", "text").attr("name", "detalles[" + detalleCount + "].DescPrenda").addClass("form-control").val($("#desc-prenda").val())
-                        ),
-                        $("<td>").append(
-                            $("<input>").attr("type", "text").attr("name", "detalles[" + detalleCount + "].DetallesPrenda").addClass("form-control").val($("#desc-detallada-prenda").val())
-                        ),
-                        $("<td>").append(
-                            $("<input>").attr("type", "number").attr("name", "detalles[" + detalleCount + "].CantidadPrenda").addClass("form-control").val($("#cantidad-prenda").val())
+                
+                if (validarCampos()) {
+                    $("#tabla-pedido > tbody").append(
+                        $("<tr>").append(
+                            $("<td>").append(
+                                $("<input>")
+                                .attr("type", "text")
+                                .attr("name", "detalles[" + detalleCount + "].DescPrenda")
+                                .addClass("form-control")
+                                .val($("#desc-prenda")
+                                .val())
+                            ),
+                            $("<td>").append(
+                                $("<input>")
+                                .attr("type", "text")
+                                .attr("name", "detalles[" + detalleCount + "].DetallesPrenda")
+                                .addClass("form-control")
+                                .val($("#desc-detallada-prenda")
+                                .val())
+                            ),
+                            $("<td>").append(
+                                $("<input>")
+                                .attr("type", "number")
+                                .attr("name", "detalles[" + detalleCount + "].CantidadPrenda")
+                                .addClass("form-control")
+                                .val($("#cantidad-prenda")
+                                .val())
+                            )
                         )
-                    )
-                );
-
-                $("#desc-prenda").val("");
-                $("#desc-detallada-prenda").val("");
-                $("#cantidad-prenda").val("");
-                $("#desc-prenda").focus();
-
-                detalleCount++;
+                    );
+    
+                    $("#desc-prenda").val("");
+                    $("#desc-detallada-prenda").val("");
+                    $("#cantidad-prenda").val("");
+                    $("#desc-prenda").focus();
+    
+                    detalleCount++;   
+                }
             });
+            
+            const validarCampos = () => {
+                const campos = [
+                    {
+                        id: "#desc-prenda",
+                        mensaje: "Ingrese la prenda"
+                    },
+                    {
+                        id: "#desc-detallada-prenda",
+                        mensaje: "Ingrese los detalles de la prenda"
+                    },
+                    {
+                        id: "#cantidad-prenda",
+                        mensaje: "Ingrese la cantidad"
+                    }
+                ];
+            
+                for (const campo of campos) {
+                    const valor = $(campo.id).val().trim();
+            
+                    if (valor === "") {
+                        toastMessage(campo.mensaje, "error");
+                        return false;
+                    }
+                }
+            
+                return true;
+            };
 
             $("select").select2();
         });

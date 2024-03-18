@@ -6,11 +6,9 @@
 
 <h4>Clientes</h4>
 
-<div class="d-flex justify-content-between align-items-center mb-2">
-    <a asp-action="Create">Nuevo Cliente</a>
+<div class="d-flex justify-content-end align-items-center mb-2">
     <div class="d-flex justify-content-between align-items-center mb-2 gap-2">
-        <a class="btn btn-outline-secondary" asp-action="Solicitudes">Solicitudes</a>
-        <a class="btn btn-outline-secondary" asp-action="Inactivos">Clientes Inactivos</a>
+        <a class="btn btn-outline-secondary" asp-action="Index">Clientes Activos</a>
     </div>
 </div>
 
@@ -54,11 +52,26 @@
             @Html.DisplayFor(modelItem => item.Pedidos.Count)
         </td>
         <td>
-            <a asp-action="Edit" asp-route-id="@item.IdCliente">Editar</a>
-            <a asp-action="Details" asp-route-id="@item.IdCliente">Detalles</a>
-            <a asp-action="Delete" asp-route-id="@item.IdCliente">Eliminar</a>
+            <form asp-action="Inactivos" method="post">
+                <input type="hidden" name="id" value="@item.IdCliente"/>
+                <input class="btn btn-outline-success" type="submit" value="Reactivar"/>
+            </form>
         </td>
     </tr>
 }
     </tbody>
 </table>
+
+@section Scripts {
+    <script type="module">
+        import toastMessage from '/js/toastMessage.js';
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const errorMessage = "@ViewBag.ErrorMessage";
+            errorMessage && toastMessage(errorMessage, "error");
+            
+            const doneMessage = "@ViewBag.DoneMessage";
+            doneMessage && toastMessage(doneMessage, "success");
+        });
+    </script>
+}

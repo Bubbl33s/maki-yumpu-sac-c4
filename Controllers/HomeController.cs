@@ -34,6 +34,11 @@ namespace MakiYumpuSAC.Controllers
             return View();
         }
 
+        public IActionResult Coleccion()
+        {
+            return View();
+        }
+
         public IActionResult PedidoCliente()
         {
             LoadData();
@@ -73,7 +78,7 @@ namespace MakiYumpuSAC.Controllers
                     }
 
                     // Asignar la propiedad de navegación IdClienteNavigation al pedido
-                    pedido.FechaGeneracionPedido = pedido.FechaEntrega = DateTime.Now;
+                    pedido.FechaGeneracionPedido = DateTime.Now;
                     pedido.EstadoPedido = "Por revisar";
                     pedido.IdClienteNavigation = cliente; // Asignación directa
                     pedido.IdUsuario = 1;

@@ -19,7 +19,7 @@
             </div>
             <div class="form-group">
                 <label name="pedido.FechaEntrega" class="control-label">Fecha estimada</label>
-                <input name="pedido.FechaEntrega" class="form-control" type="date" />
+                <input id="fecha-estimada" name="pedido.FechaEntrega" class="form-control" type="date" />
             </div>
             <hr />
             <div class="row align-items-end">
@@ -77,6 +77,30 @@
         
         $(document).ready(function () {
             let detalleCount = 0;
+            
+            const today = new Date().toISOString().split('T')[0];
+            
+            document.getElementById('fecha-estimada').min = today;
+            document.getElementById('fecha-estimada').value = today;
+            
+            $("#btn-finalizar").on("click", (e) => {
+                e.preventDefault();
+                
+                // Obtener la fecha estimada ingresada por el usuario
+                const fechaEstimada = new Date($("#fecha-estimada").val());
+
+                // Obtener el año actual más 10 años
+                const limiteAnio = new Date().getFullYear() + 10;
+                const fechaLimite = new Date(limiteAnio, 0, 1);
+
+                if (fechaEstimada >= fechaLimite) {
+                    toastMessage("La fecha estimada debe ser menor", "error");
+                    return;
+                }
+                
+                // Si la validación pasa, puedes proceder con el envío del formulario
+                $("form").submit();
+            });
 
             $("#btn-agregar").on("click", (e) => {
                 e.preventDefault();

@@ -254,15 +254,56 @@ namespace MakiYumpuSAC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var cliente = await _context.Clientes.FindAsync(id);
+            var cliente = await _context.Clientes
+                .Include(c => c.Pedidos)
+                .Where(c => c.IdCliente == id)
+                .FirstOrDefaultAsync();
             
             if (cliente != null)
             {
                 cliente.Activo = false;
+
+                foreach (var pedido in cliente.Pedidos)
+                {
+                    pedido.Activo = false;
+                }
+                
                 await _context.SaveChangesAsync();
             }
             
             return RedirectToAction(nameof(Index));
+        }
+        
+        // GET: Clientes/Inactivos
+        public async Task<IActionResult> Inactivos()
+        {
+            var clientes = await _context.Clientes
+                .Include(c => c.Pedidos)
+                .Where(c => !c.Activo)
+                .ToListAsync();
+
+            return View(clientes);
+        }
+
+        [HttpPost, ActionName("Inactivos")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Inactivos(int id)
+        {
+            var cliente = await _context.Clientes.FindAsync(id);
+
+            if (cliente != null)
+            {
+                cliente.Activo = true;
+                await _context.SaveChangesAsync();
+                ViewData["DoneMessage"] = "Cliente reactivado";
+            }
+            
+            var clientesInactivos = await _context.Clientes
+                .Include(c => c.Pedidos)
+                .Where(c => !c.Activo)
+                .ToListAsync();
+
+            return View(clientesInactivos);
         }
 
         private bool ClienteExists(int id)
