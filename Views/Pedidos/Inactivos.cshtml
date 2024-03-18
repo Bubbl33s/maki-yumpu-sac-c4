@@ -1,16 +1,14 @@
 ﻿@model IEnumerable<MakiYumpuSAC.Models.Pedido>
 
 @{
-    ViewData["Title"] = "Pedidos";
+    ViewData["Title"] = "Pedidos Inactivos";
 }
 
-<h4>Pedidos</h4>
+<h4>Pedidos Inactivos</h4>
 
-<div class="d-flex justify-content-between align-items-center mb-2">
-    <a asp-action="Create">Nuevo Pedido</a>
+<div class="d-flex justify-content-end align-items-center mb-2">
     <div class="d-flex justify-content-between align-items-center mb-2 gap-2">
-        <a class="btn btn-outline-secondary" asp-action="Solicitudes">Solicitudes</a>
-        <a class="btn btn-outline-secondary" asp-action="Inactivos">Pedidos Inactivos</a>
+        <a class="btn btn-outline-da" asp-action="Index">Volver</a>
     </div>
 </div>
 
@@ -66,11 +64,25 @@
             @Html.DisplayFor(modelItem => item.IdUsuarioNavigation.NombresUsuario)
         </td>
         <td>
-            <a class="btn btn-outline-info" asp-action="Edit" asp-route-id="@item.IdPedido">Actualizar</a>
             <a class="btn btn-outline-primary" asp-action="Details" asp-route-id="@item.IdPedido">Detalles</a>
-            <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.IdPedido">Eliminar</a>
+            <form asp-action="Inactivos">
+                <input type="hidden" name="id" value="@item.IdPedido"/>
+                <input class="btn btn-outline-success" type="submit" value="Reactivar"/>
+            </form>
         </td>
     </tr>
 }
     </tbody>
 </table>
+
+@section Scripts {
+    <script type="module">
+        import toastMessage from '/js/toastMessage.js';
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const doneMessage = "@ViewBag.DoneMessage";
+
+            doneMessage && toastMessage(doneMessage, "success");
+        });
+    </script>
+}

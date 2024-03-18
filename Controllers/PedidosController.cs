@@ -25,6 +25,7 @@ namespace MakiYumpuSAC.Controllers
             var makiYumpuSacContext = await _context.Pedidos
                 .Include(p => p.IdClienteNavigation)
                 .Include(p => p.IdUsuarioNavigation)
+                .Where(p => p.Activo && p.EstadoPedido != "Por revisar")
                 .ToListAsync();
 
             return View(makiYumpuSacContext);
@@ -320,7 +321,7 @@ namespace MakiYumpuSAC.Controllers
             var pedido = await _context.Pedidos.FindAsync(id);
             if (pedido != null)
             {
-                _context.Pedidos.Remove(pedido);
+                pedido.Activo = false;
             }
 
             await _context.SaveChangesAsync();
@@ -330,6 +331,37 @@ namespace MakiYumpuSAC.Controllers
         private bool PedidoExists(int id)
         {
             return _context.Pedidos.Any(e => e.IdPedido == id);
+        }
+        
+        // GET: Inactivos
+        public async Task<IActionResult> Inactivos()
+        {
+            var pedidosInactivos = await _context.Pedidos
+                .Include(p => p.IdClienteNavigation)
+                .Include(p => p.IdUsuarioNavigation)
+                .Include(p => p.DetallePedidos)
+                .Where(p => !p.Activo && p.EstadoPedido != "Por revisar")
+                .ToListAsync();
+
+            return View(pedidosInactivos);
+        }
+        
+        // POST: Inactivos
+        [HttpPost, ActionName("Inactivos")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Inactivos(int id)
+        {
+            var pedido = await _context.Pedidos.FindAsync(id);
+
+            if (pedido != null)
+            {
+                pedido.Activo = true;
+                await _context.SaveChangesAsync();
+
+                ViewData["DoneMessage"] = "Pedido reactivado";
+            }
+            
+            return View();
         }
 
         private void LoadData()
