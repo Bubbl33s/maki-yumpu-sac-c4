@@ -1,0 +1,33 @@
+﻿@model MakiYumpuSAC.Models.Pedido;
+
+@{
+    Layout = "/Views/Shared/_LayoutClientes.cshtml";
+    ViewData["Title"] = "Pedido Generado";
+}
+
+@section Head {
+    <link rel="stylesheet" href="~/css/Home/Mensaje.css" asp-append-version="true" />
+}
+
+<!-- Mensaje -->
+<section class="fondo-mensaje">
+    <div class="mesaje-container">
+        <div class="caja-mensaje">
+            <div class="mensaje">
+                <h2 class="menaje-titulo">Hola @Html.DisplayFor(model => model.IdClienteNavigation.NombreCompletoCliente)</h2>
+                <h4 class="menaje-subtitulo">Se ha generado su pedido con el código @Html.DisplayFor(model => model.IdPedido)</h4>
+                <br>
+                <div class="mensaje-info">
+                    <p>
+                        Este código te servirá para consultar el estado de tu pedido
+                    </p>
+                    <p>Se envió un correo con el resumen de pedido a <i>@Html.DisplayFor(model => model.IdClienteNavigation.CorreoCliente)</i></p>
+                </div>
+                <h1 class="menaje-agradecimiento">Gracias por Confiar en Nosotros</h1>
+                <br>
+                <h1 class="menaje-nombre">Maki Yumpu S.A.C</h1>
+                <a href="#" class="mensaje-logo"><img src="~/img/logo.png" alt="logo" class="img-logo"></a>
+            </div>
+        </div>
+    </div>
+</section>

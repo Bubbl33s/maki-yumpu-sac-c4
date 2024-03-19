@@ -4,6 +4,10 @@
     ViewData["Title"] = "Pedidos";
 }
 
+@section Head {
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+}
+
 <h4>Pedidos</h4>
 
 <div class="d-flex justify-content-between align-items-center mb-2">
@@ -14,17 +18,17 @@
     </div>
 </div>
 
-<div class="d-flex align-items-center gap-2 mb-2">
-    <div>
+<div class="d-flex align-items-center gap-3 mb-2">
+    <div class="d-flex align-items-center gap-2 mb-2 w-25">
         <label>Clientes</label>
-        <select id="select-clientes" asp-items="ViewBag.SelectClientes">
+        <select class="w-100" id="select-clientes" asp-items="ViewBag.SelectClientes">
             <option value="Todos">Todos</option>
         </select>
     </div>
 
-    <div>
-        <label>Estados</label>
-        <select id="select-estados" asp-items="ViewBag.SelectEstados">
+    <div class="d-flex align-items-center gap-2 mb-2">
+        <label>Estado</label>
+        <select style="height: 28px;" id="select-estados" asp-items="ViewBag.SelectEstados">
         </select>
     </div>
 </div>
@@ -99,8 +103,11 @@
 
 
 @section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
         $(document).ready(function () {
+            $("#select-clientes").select2();
+
             $('#select-clientes').change(function () {
                 var selectedClient = $(this).val();
 

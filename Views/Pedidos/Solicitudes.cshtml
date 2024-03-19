@@ -20,6 +20,9 @@
                 Fecha de Solicitud
             </th>
             <th>
+                Fecha Estimada
+            </th>
+            <th>
                 Cliente
             </th>
             <th>
@@ -38,9 +41,12 @@
                 @Html.DisplayFor(modelItem => item.IdPedido)
             </td>
             <td>
+                @Html.DisplayFor(modelItem => item.FechaGeneracionPedido)
+            </td>
+            <td>
                 @{
-                    var fechaGeneracion = item.FechaGeneracionPedido;
-                    @fechaGeneracion.ToString("dd/MM/yyyy")
+                    var fechaEntrega = item.FechaEntrega;
+                    @fechaEntrega.ToString("dd/MM/yyyy")
                 }
             </td>
             <td>

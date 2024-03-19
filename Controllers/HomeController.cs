@@ -7,6 +7,7 @@ using System.Diagnostics;
 using MakiYumpuSAC.Services.Contract;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
+using Microsoft.Extensions.Primitives;
 
 namespace MakiYumpuSAC.Controllers
 {
@@ -97,6 +98,7 @@ namespace MakiYumpuSAC.Controllers
 
                     if (pedido.IdClienteNavigation != null)
                     {
+                        // NOTIFICACIÓN POR CORREO
                         NotificarPedido(pedido);
                     }
 
@@ -105,7 +107,9 @@ namespace MakiYumpuSAC.Controllers
 
                     ViewData["DoneMessage"] = "Pedido realizado exitosamente";
 
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction(
+                        nameof(Mensaje),
+                        new { id = pedido.IdPedido });
                 }
                 catch
                 {
@@ -123,6 +127,16 @@ namespace MakiYumpuSAC.Controllers
                 Utilities.ModelValidations(ModelState, ViewData);
                 Console.WriteLine(ViewData["ErrorMessage"]);
             }
+
+            return View(pedido);
+        }
+
+        public async Task<IActionResult> Mensaje(int id)
+        {
+            var pedido = await _context.Pedidos
+                .Include(p => p.IdClienteNavigation)
+                .Where(p => p.IdPedido == id)
+                .FirstOrDefaultAsync();
 
             return View(pedido);
         }
@@ -157,6 +171,10 @@ namespace MakiYumpuSAC.Controllers
             // Estilos CSS para la tabla
             const string tablaStyle = """
                                       <style>
+                                          .info {
+                                              margin-bottom: 8px;
+                                          }
+
                                           table {
                                               border-collapse: collapse;
                                               width: 100%;
@@ -179,8 +197,14 @@ namespace MakiYumpuSAC.Controllers
             sb.Append(tablaStyle); // Agregar estilos CSS
             sb.Append("</head>");
             sb.Append("<body>");
-            sb.Append("<table>");
 
+            // Info
+            sb.Append("<div class='info'>");
+            sb.Append(String.Format("<p>Pedido con ID <b>{0}</b></p>", pedido.IdPedido));
+            sb.Append("<p>Puedes consultar el estado de tu pedido con el ID, de todas formas siempre te notificamos.</p>");
+            sb.Append("</div>");
+
+            sb.Append("<table>");
             // Encabezados de la tabla
             sb.Append("<tr>");
             sb.Append("<th>Prenda</th>");
