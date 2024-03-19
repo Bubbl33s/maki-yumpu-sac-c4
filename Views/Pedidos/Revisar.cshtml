@@ -6,6 +6,10 @@
 
 <h4>Revisar Solicitud</h4>
 
+<div class="d-flex justify-content-end align-items-center gap-2">
+    <a asp-action="Solicitudes">Volver</a>
+</div>
+
 <div>
     <h4>Pedido</h4>
     <hr />
@@ -97,6 +101,5 @@
             <input type="hidden" name="id" value="@Model.IdPedido" />
             <button type="submit">Rechazar</button>
         </form>
-        <a asp-action="Index">Back to List</a>
     </div>
 </div>

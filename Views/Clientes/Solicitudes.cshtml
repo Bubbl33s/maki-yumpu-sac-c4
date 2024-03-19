@@ -34,14 +34,16 @@
                 @Html.DisplayFor(modelItem => item.PaisCliente)
             </td>
             <td>
-                <form asp-action="AceptarSolicitud" method="post">
-                    <input type="hidden" name="id" value=".@item.IdCliente" />
-                    <button class="btn btn-outline-primary" type="submit">Aceptar</button>
-                </form>
-                <form asp-action="RechazarSolicitud" method="post">
-                    <input type="hidden" name="id" value=".@item.IdCliente" />
-                    <button class="btn btn-outline-danger" type="submit">Rechazar</button>
-                </form>
+                <div class="d-flex align-items-center gap-2">
+                    <form asp-action="AceptarSolicitud" method="post">
+                        <input type="hidden" name="id" value="@item.IdCliente" />
+                        <button class="btn btn-outline-primary" type="submit">Aceptar</button>
+                    </form>
+                    <form asp-action="RechazarSolicitud" method="post">
+                        <input type="hidden" name="id" value="@item.IdCliente" />
+                        <button class="btn btn-outline-danger" type="submit">Rechazar</button>
+                    </form>
+                </div>
             </td>
         </tr>
 }

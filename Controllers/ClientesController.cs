@@ -28,6 +28,7 @@ namespace MakiYumpuSAC.Controllers
             return View(await _context.Clientes
                 .Include(c => c.Pedidos)
                 .Where(c => c.Activo)
+                .Where(c => c.Revisado)
                 .ToListAsync());
         }
         

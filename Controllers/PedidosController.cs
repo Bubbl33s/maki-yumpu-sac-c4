@@ -25,8 +25,16 @@ namespace MakiYumpuSAC.Controllers
             var makiYumpuSacContext = await _context.Pedidos
                 .Include(p => p.IdClienteNavigation)
                 .Include(p => p.IdUsuarioNavigation)
+                .Include(p => p.DetallePedidos)
                 .Where(p => p.Activo && p.EstadoPedido != "Por revisar")
                 .ToListAsync();
+
+            ViewData["SelectClientes"] = new SelectList(
+                _context.Clientes
+                .Where(c => c.Pedidos.Any(p => p.EstadoPedido != "Por revisar")),
+                "NombreCompletoCliente", "NombreCompletoCliente");
+
+            ViewData["SelectEstados"] = Utilities.EstadoPedidosFiltrados();
 
             return View(makiYumpuSacContext);
         }
@@ -103,7 +111,8 @@ namespace MakiYumpuSAC.Controllers
             {
                 try
                 {
-                    _context.Clientes.Add(pedido.IdClienteNavigation);
+                    pedido.IdClienteNavigation.Activo = true;
+                    pedido.IdClienteNavigation.Revisado = true;
                     
                     pedido.Activo = true;
                     pedido.IdClienteNavigation.Activo = true;
@@ -365,18 +374,7 @@ namespace MakiYumpuSAC.Controllers
         }
 
         private void LoadData()
-        {
-            /*
-            var clientes = _context.Clientes
-                .Where(c => c.Activo)
-                .ToList();
-
-            var clientesItems = clientes.Select(c => new SelectListItem
-            {
-                Value = $"{c.IdCliente}",
-                Text = $"{c.NombreCompletoCliente}"
-            });*/
-            
+        {   
             ViewData["IdCliente"] = new SelectList(_context.Clientes, "IdCliente", "NombreCompletoCliente");
             ViewData["IdUsuario"] = new SelectList(_context.Usuarios, "IdUsuario", "ApPatUsuario");
         }

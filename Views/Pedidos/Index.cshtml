@@ -14,7 +14,22 @@
     </div>
 </div>
 
-<table class="table">
+<div class="d-flex align-items-center gap-2 mb-2">
+    <div>
+        <label>Clientes</label>
+        <select id="select-clientes" asp-items="ViewBag.SelectClientes">
+            <option value="Todos">Todos</option>
+        </select>
+    </div>
+
+    <div>
+        <label>Estados</label>
+        <select id="select-estados" asp-items="ViewBag.SelectEstados">
+        </select>
+    </div>
+</div>
+
+<table id="tabla-pedidos" class="table">
     <thead>
     <tr>
         <th>
@@ -34,6 +49,9 @@
         </th>
         <th>
             Usuario
+        </th>
+        <th>
+            Detalles
         </th>
         <th></th>
     </tr>
@@ -66,11 +84,54 @@
             @Html.DisplayFor(modelItem => item.IdUsuarioNavigation.NombresUsuario)
         </td>
         <td>
-            <a class="btn btn-outline-info" asp-action="Edit" asp-route-id="@item.IdPedido">Actualizar</a>
-            <a class="btn btn-outline-primary" asp-action="Details" asp-route-id="@item.IdPedido">Detalles</a>
-            <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.IdPedido">Eliminar</a>
+            @Html.DisplayFor(modelItem => item.DetallePedidos.Count)
+        </td>
+        <td>
+            <a class="btn btn-outline-primary" asp-action="Details" asp-route-id="@item.IdPedido">Ver detalles</a>
         </td>
     </tr>
 }
+    <tr id="no-coincidencias" style="display:none;">
+        <td colspan="8">No se encontraron coincidencias.</td>
+    </tr>
     </tbody>
 </table>
+
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#select-clientes').change(function () {
+                var selectedClient = $(this).val();
+
+                $('#tabla-pedidos tbody tr').each(function () {
+                    var clienteCell = $(this).find('td:nth-child(5)');
+
+                    if (selectedClient === 'Todos' || clienteCell.text().trim() === selectedClient) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            });
+
+            $('#select-estados').change(function () {
+                var selectedEstado = $(this).val();
+                let noCoincidencias = true;
+
+                $('#tabla-pedidos tbody tr').each(function () {
+                    var clienteCell = $(this).find('td:nth-child(4)');
+
+                    if (selectedEstado === 'Todos' || clienteCell.text().trim() === selectedEstado) {
+                        $(this).show();
+                        noCoincidencias = false;
+                    } else {
+                        $(this).hide();
+                    }
+                });
+
+                $("#no-coincidencias").toggle(noCoincidencias);
+            });
+        });
+    </script>
+}

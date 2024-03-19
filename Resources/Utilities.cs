@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore.Query.Internal;
 using System.Runtime.Intrinsics.Arm;
 using System.Security.Cryptography;
 using System.Text;
+using MakiYumpuSAC.Models;
 
 namespace MakiYumpuSAC.Resources
 {
@@ -136,6 +137,22 @@ namespace MakiYumpuSAC.Resources
                 "En revisión",
                 "Aceptado",
                 "En proceso",
+                "Finalizado"
+            };
+
+            return new SelectList(estados);
+        }
+
+        public static SelectList EstadoPedidosFiltrados()
+        {
+            var estados = new List<string>()
+            {
+                "Todos",
+                "Pre-aceptado",
+                "En revisión",
+                "Aceptado",
+                "En proceso",
+                // TODO: Quitar los finalizados y hacer otra vista
                 "Finalizado"
             };
 

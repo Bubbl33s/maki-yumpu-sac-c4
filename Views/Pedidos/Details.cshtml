@@ -41,6 +41,12 @@
     </dl>
 </div>
 
+<div class="d-flex justify-content-end align-items-center gap-2">
+    <a class="btn btn-outline-info" asp-action="Edit" asp-route-id="@Model?.IdPedido">Actualizar</a>
+    <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@Model?.IdPedido">Eliminar</a>
+</div>
+
+
 <table class="table">
     <thead>
         <tr>
