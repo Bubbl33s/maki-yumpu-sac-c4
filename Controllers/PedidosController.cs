@@ -266,7 +266,6 @@ namespace MakiYumpuSAC.Controllers
             }
             
             LoadData();
-            ViewData["SelectEstados"] = Utilities.EstadoPedidos();
 
             return View(pedido);
         }
@@ -276,37 +275,109 @@ namespace MakiYumpuSAC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdPedido,FechaGeneracionPedido,FechaEntrega,IdCliente,IdUsuario,EstadoPedidoId")] Pedido pedido)
+        public async Task<IActionResult> Edit(Pedido pedido, DetallePedido[] detalles, string idsDetallesEliminar)
         {
-            if (id != pedido.IdPedido)
-            {
-                return NotFound();
-            }
+            var pedidoDB = await _context.Pedidos
+                .Include(p => p.IdClienteNavigation)
+                .Include(p => p.DetallePedidos)
+                .Where(p => p.IdPedido == pedido.IdPedido)
+                .FirstOrDefaultAsync();
 
-            if (ModelState.IsValid)
+            if (pedidoDB != null)
             {
+
+                if (detalles.Length == 0)
+                {
+                    foreach (var det in pedidoDB.DetallePedidos)
+                    {
+                        _context.DetallePedidos.Remove(det);
+                    }
+
+                    await _context.SaveChangesAsync();
+                    _context.Pedidos.Remove(pedidoDB);
+                    await _context.SaveChangesAsync();
+
+                    return RedirectToAction(nameof(Index));
+                }
+
+                await using var transaction = await _context.Database.BeginTransactionAsync();
+
                 try
                 {
-                    _context.Update(pedido);
+                    // Modificar detalles existentes
+                    for (int i = 0; i < detalles.Length; i++)
+                    {
+                        if (detalles[i].IdDetPedido != 0)
+                        {
+                            var detalle = await _context.DetallePedidos.FindAsync(detalles[i].IdDetPedido);
+
+                            if (detalle != null)
+                            {
+                                detalle.DescPrenda = detalles[i].DescPrenda;
+                                detalle.DetallesPrenda = detalles[i].DetallesPrenda;
+                                detalle.CantidadPrenda = detalles[i].CantidadPrenda;
+
+                                _context.DetallePedidos.Update(detalle);
+                            }
+                        }
+                    }
+
+                    // Agregar nuevos detalles
+                    foreach (var nuevoDetalle in detalles)
+                    {
+                        if (nuevoDetalle.IdDetPedido == 0)
+                        {
+                            nuevoDetalle.IdPedido = pedido.IdPedido;
+                            _context.DetallePedidos.Add(nuevoDetalle);
+                        }
+                    }
+
+                    // Eliminar detalles existentes
+                    if (idsDetallesEliminar != null)
+                    {
+                        int[] idsDetalles = idsDetallesEliminar.Split(',').Select(int.Parse).ToArray();
+
+                        foreach (var idDetalleEliminar in idsDetalles)
+                        {
+                            var detalleEliminar = await _context.DetallePedidos.FindAsync(idDetalleEliminar);
+                            if (detalleEliminar != null)
+                            {
+                                _context.DetallePedidos.Remove(detalleEliminar);
+                            }
+                        }
+                    }
+
+                    // DATOS DEL PEDIDO
+                    pedidoDB.FechaEntrega = pedido.FechaEntrega;
+                    pedidoDB.EstadoPedido = pedido.EstadoPedido;
+                    pedidoDB.IdCliente = pedido.IdCliente;
+                    pedidoDB.IdClienteNavigation = await _context.Clientes.FindAsync(pedido.IdCliente);
+
+                    _context.Update(pedidoDB);
                     await _context.SaveChangesAsync();
+
+                    await transaction.CommitAsync();
+
+                    // ELIMINAR EL PEDIDO SI SE QUEDA SIN DETALLES
+
+                    return RedirectToAction("Details", new { id = pedido.IdPedido });
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PedidoExists(pedido.IdPedido))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    await transaction.RollbackAsync();
                 }
-                return RedirectToAction(nameof(Index));
             }
-            
+
+            var pedidoView = await _context.Pedidos
+                .Include(p => p.IdClienteNavigation)
+                .Include(p => p.IdUsuarioNavigation)
+                .Include(p => p.DetallePedidos)
+                .Where(p => p.IdPedido == pedido.IdPedido)
+                .FirstOrDefaultAsync();
+
             LoadData();
-            
-            return View(pedido);
+
+            return View(pedidoView);
         }
 
         // GET: Pedidos/Delete/5
@@ -401,6 +472,7 @@ namespace MakiYumpuSAC.Controllers
 
             ViewData["IdCliente"] = new SelectList(clientesItems, "Value", "Text");
             ViewData["IdUsuario"] = new SelectList(_context.Usuarios, "IdUsuario", "ApPatUsuario");
+            ViewData["SelectEstados"] = Utilities.EstadoPedidos();
         }
     }
 }

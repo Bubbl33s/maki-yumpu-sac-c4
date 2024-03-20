@@ -29,6 +29,8 @@
 <form asp-action="Edit">
     <div>
         <dl class="row">
+            <input type="hidden" name="pedido.IdPedido" value="@Model.IdPedido" />
+            <input type="hidden" id="ids-detalles-a-eliminar" name="idsDetallesEliminar" value="" />
             <dt class = "col-sm-2">
                 Fecha de Solicitud
             </dt>
@@ -93,6 +95,7 @@
             @foreach (var item in Model.DetallePedidos)
             {
                 <tr>
+                    <input type="hidden" name="detalles[@contadorDetalles].IdDetPedido" value="@item.IdDetPedido" />
                     <td class="td-desc">
                         <input
                             name="detalles[@contadorDetalles].DescPrenda"
@@ -119,7 +122,8 @@
                     <td style="width: 120px;">
                         <!-- TODO: DETALLES A ELIMINAR -->
                         <button
-                            class="btn btn-danger"
+                            type="button"
+                            class="btn btn-danger btn-eliminar-detalle-existente"
                             onclick=""
                             data-id="@item.IdDetPedido">
                             Eliminar
@@ -134,7 +138,7 @@
 
     <div class="d-flex justify-content-between align-items-center">
         <div>
-            <button id="btn-agregar" class="btn btn-outline-info">Agregar detalle</button>
+            <button type="button" id="btn-agregar" class="btn btn-outline-info">Agregar detalle</button>
         </div>
         <div class="d-flex justify-content-end align-items-center gap-2">
             <a class="btn btn-outline-danger" onclick="window.history.back();">Cancelar</a>
@@ -222,6 +226,21 @@
             });
 
             $(document).on("click", ".btn-eliminar-nuevo-detalle", function () {
+                $(this).closest('tr').remove();
+            });
+
+            $(document).on("click", ".btn-eliminar-detalle-existente", function () {
+                var idDetalle = $(this).data("id");
+                var idsDetallesEliminar = $("#ids-detalles-a-eliminar").val();
+
+                if (!idsDetallesEliminar) {
+                    idsDetallesEliminar = idDetalle.toString(); // Si no hay ningún ID, simplemente asignamos el primer ID
+                } else {
+                    idsDetallesEliminar += "," + idDetalle; // Agregamos el nuevo ID al final de la cadena
+                }
+
+                $("#ids-detalles-a-eliminar").val(idsDetallesEliminar);
+
                 $(this).closest('tr').remove();
             });
         });
