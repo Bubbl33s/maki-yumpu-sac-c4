@@ -369,8 +369,15 @@ namespace MakiYumpuSAC.Controllers
 
                 ViewData["DoneMessage"] = "Pedido reactivado";
             }
-            
-            return View();
+
+            var pedidosInactivos = await _context.Pedidos
+                .Include(p => p.IdClienteNavigation)
+                .Include(p => p.IdUsuarioNavigation)
+                .Include(p => p.DetallePedidos)
+                .Where(p => !p.Activo && p.EstadoPedido != "Por revisar")
+                .ToListAsync();
+
+            return View(pedidosInactivos);
         }
 
         private void LoadData()
