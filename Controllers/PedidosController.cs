@@ -253,14 +253,21 @@ namespace MakiYumpuSAC.Controllers
                 return NotFound();
             }
 
-            var pedido = await _context.Pedidos.FindAsync(id);
+            var pedido = await _context.Pedidos
+                .Include(p => p.IdClienteNavigation)
+                .Include(p => p.IdUsuarioNavigation)
+                .Include(p => p.DetallePedidos)
+                .Where(p => p.IdPedido == id)
+                .FirstOrDefaultAsync();
+
             if (pedido == null)
             {
                 return NotFound();
             }
             
             LoadData();
-            
+            ViewData["SelectEstados"] = Utilities.EstadoPedidos();
+
             return View(pedido);
         }
 
@@ -381,8 +388,18 @@ namespace MakiYumpuSAC.Controllers
         }
 
         private void LoadData()
-        {   
-            ViewData["IdCliente"] = new SelectList(_context.Clientes, "IdCliente", "NombreCompletoCliente");
+        {
+            var clientesItems = _context.Clientes
+                .Where(c => c.Activo && c.Revisado)
+                .ToList()
+                .Select(c => new SelectListItem
+                {
+                    Value = $"{c.IdCliente}",
+                    Text = $"{c.IdCliente} - {c.NombreCompletoCliente}"
+                })
+                .ToList();
+
+            ViewData["IdCliente"] = new SelectList(clientesItems, "Value", "Text");
             ViewData["IdUsuario"] = new SelectList(_context.Usuarios, "IdUsuario", "ApPatUsuario");
         }
     }

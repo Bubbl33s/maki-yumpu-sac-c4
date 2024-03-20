@@ -255,7 +255,9 @@ namespace MakiYumpuSAC.Controllers
             {
                 Value = $"{mb.IdMaterialBase}",
                 Text = $"{mb.CodigoMaterial} - {mb.DescMaterial}"
-            }).ToList();
+            })
+            .ToList();
+
             var selectList = new SelectList(materialBaseItems, "Value", "Text");
             ViewData["CodigoMaterialBase"] = selectList;
             ViewData["Hebras"] = Utilities.HebrasOptions();
