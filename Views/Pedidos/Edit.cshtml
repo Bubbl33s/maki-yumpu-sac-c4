@@ -172,7 +172,9 @@
 
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <script>
+    <script type="module">
+        import toastMessage from '/js/toastMessage.js';
+
         $(document).ready(function () {
             // Setteo de los inputs
             $('#fecha-entrega')
@@ -242,6 +244,30 @@
                 $("#ids-detalles-a-eliminar").val(idsDetallesEliminar);
 
                 $(this).closest('tr').remove();
+            });
+
+            function validarCamposDetalle() {
+                let camposValidos = true;
+                // Itera sobre cada campo de entrada con la clase form-control
+                $('.form-control').each(function () {
+                    // Verificar si el valor del campo está vacío
+                    if (!$(this).val().trim()) {
+                        // Establece camposValidos a false si la validación falla
+                        camposValidos = false;
+                    }
+                });
+
+                return camposValidos;
+            }
+
+            // Agregar un listener al evento submit del formulario para ejecutar la validación antes de enviarlo
+            $('form').submit(function (event) {
+                // Validar los campos de detalle antes de enviar el formulario
+                if (!validarCamposDetalle()) {
+                    // Si la validación falla, prevenir el envío del formulario
+                    event.preventDefault();
+                    toastMessage("Rellene todos los campos.", "error");
+                }
             });
         });
     </script>
